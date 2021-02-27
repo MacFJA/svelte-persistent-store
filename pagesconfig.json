@@ -1,0 +1,12 @@
+{
+  "groups": [
+    {
+      "title": "Svelte Persistent store",
+      "pages": [
+        {"title": "Changelog", "source": "CHANGELOG.md"},
+        {"title": "Contributing", "source": "CONTRIBUTING.md"},
+        {"title": "License", "source": "LICENSE.md"}
+      ]
+    }
+  ]
+}
