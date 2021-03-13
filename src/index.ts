@@ -84,9 +84,10 @@ function getBrowserStorage(browserStorage: Storage): StorageInterface<any> {
  * Storage implementation that use the browser local storage
  */
 export function localStorage<T>(): StorageInterface<T> {
-    if (typeof window !== 'undefined' && window?.localStorage) {
+    if (typeof window !== "undefined" && window?.localStorage) {
         return getBrowserStorage(window.localStorage)
     }
+    console.warn("Unable to find the localStorage. No data will be persisted.")
     return noopStorage()
 }
 
@@ -94,9 +95,10 @@ export function localStorage<T>(): StorageInterface<T> {
  * Storage implementation that use the browser session storage
  */
 export function sessionStorage<T>(): StorageInterface<T> {
-    if (typeof window !== 'undefined' && window?.sessionStorage) {
+    if (typeof window !== "undefined" && window?.sessionStorage) {
         return getBrowserStorage(window?.sessionStorage)
     }
+    console.warn("Unable to find the sessionStorage. No data will be persisted.")
     return noopStorage()
 }
 
@@ -104,6 +106,11 @@ export function sessionStorage<T>(): StorageInterface<T> {
  * Storage implementation that use the browser cookies
  */
 export function cookieStorage(): StorageInterface<any> {
+    if (typeof document === "undefined" || typeof document?.cookie !== "string") {
+        console.warn("Unable to find the cookies. No data will be persisted.")
+        return noopStorage()
+    }
+
     return {
         getValue(key:string): any | null {
             if (!Cookies.hasItem(key)) {
