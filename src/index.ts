@@ -84,14 +84,20 @@ function getBrowserStorage(browserStorage: Storage): StorageInterface<any> {
  * Storage implementation that use the browser local storage
  */
 export function localStorage<T>(): StorageInterface<T> {
-    return getBrowserStorage(window.localStorage)
+    if (typeof window !== 'undefined' && window?.localStorage) {
+        return getBrowserStorage(window.localStorage)
+    }
+    return noopStorage()
 }
 
 /**
  * Storage implementation that use the browser session storage
  */
 export function sessionStorage<T>(): StorageInterface<T> {
-    return getBrowserStorage(window.sessionStorage)
+    if (typeof window !== 'undefined' && window?.sessionStorage) {
+        return getBrowserStorage(window?.sessionStorage)
+    }
+    return noopStorage()
 }
 
 /**
@@ -111,6 +117,23 @@ export function cookieStorage(): StorageInterface<any> {
         },
         setValue(key: string, value: any) {
             Cookies.setItem(key, JSON.stringify(value))
+        }
+    }
+}
+
+/**
+ * Storage implementation that do nothing
+ */
+export function noopStorage(): StorageInterface<any> {
+    return {
+        getValue(): null {
+            return null
+        },
+        deleteValue() {
+            // Do nothing
+        },
+        setValue() {
+            // Do nothing
         }
     }
 }
