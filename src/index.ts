@@ -19,6 +19,7 @@ export interface StorageInterface<T> {
      * Get a value from the storage.
      *
      * If the value doesn't exists in the storage, `null` should be returned.
+     * This method MUST be synchronous.
      * @param key The key/name of the value to retrieve
      */
     getValue(key: string): T | null,
@@ -37,6 +38,19 @@ export interface StorageInterface<T> {
     deleteValue(key: string): void
 }
 
+export interface SelfUpdateStorageInterface<T> extends StorageInterface<T> {
+    /**
+     * Add a listener to the storage values changes
+     * @param {(key: string) => void} listener The listener callback function
+     */
+    addListener(listener: (key: string) => void): void;
+    /**
+     * Remove a listener from the storage values changes
+     * @param {(key: string) => void} listener The listener callback function to remove
+     */
+    removeListener(listener: (key: string) => void): void;
+}
+
 /**
  * Make a store persistent
  * @param {Writable<*>} store The store to enhance
@@ -48,6 +62,14 @@ export function persist<T>(store: Writable<T>, storage: StorageInterface<T>, key
 
     if (null !== initialValue) {
         store.set(initialValue)
+    }
+
+    if ((storage as SelfUpdateStorageInterface<T>).addListener) {
+        (storage as SelfUpdateStorageInterface<T>).addListener(eventKey => {
+            if (eventKey === key) {
+                store.set(storage.getValue(key))
+            }
+        })
     }
 
     store.subscribe(value => {
@@ -62,8 +84,40 @@ export function persist<T>(store: Writable<T>, storage: StorageInterface<T>, key
     }
 }
 
-function getBrowserStorage(browserStorage: Storage): StorageInterface<any> {
+function getBrowserStorage(browserStorage: Storage, listenExternalChanges = false): SelfUpdateStorageInterface<any> {
+    const listeners: Array<(key: string) => void> = []
+    const listenerFunction = (event: StorageEvent) => {
+        if (event.storageArea === browserStorage) {
+            listeners.forEach(call => call(event.key))
+        }
+    }
+    const connect = () => {
+        if (listenExternalChanges && typeof window !== "undefined" && window?.addEventListener) {
+            window.addEventListener("storage", listenerFunction)
+        }
+    }
+    const disconnect = () => {
+        if (listenExternalChanges && typeof window !== "undefined" && window?.removeEventListener) {
+            window.removeEventListener("storage", listenerFunction)
+        }
+    }
+
     return {
+        addListener(listener: (key: string) => void) {
+            listeners.push(listener)
+            if (listeners.length === 1) {
+                connect()
+            }
+        },
+        removeListener(listener: (key: string) => void) {
+            const index = listeners.indexOf(listener)
+            if (index !== -1) {
+                listeners.splice(index, 1)
+            }
+            if (listeners.length === 0) {
+                disconnect()
+            }
+        },
         getValue(key:string): any | null {
             let value = browserStorage.getItem(key)
             if (value !== null) {
@@ -82,10 +136,11 @@ function getBrowserStorage(browserStorage: Storage): StorageInterface<any> {
 
 /**
  * Storage implementation that use the browser local storage
+ * @param {boolean} listenExternalChanges - Update the store if the localStorage is updated from another page
  */
-export function localStorage<T>(): StorageInterface<T> {
+export function localStorage<T>(listenExternalChanges = false): StorageInterface<T> {
     if (typeof window !== "undefined" && window?.localStorage) {
-        return getBrowserStorage(window.localStorage)
+        return getBrowserStorage(window.localStorage, listenExternalChanges)
     }
     console.warn("Unable to find the localStorage. No data will be persisted.")
     return noopStorage()
@@ -93,10 +148,11 @@ export function localStorage<T>(): StorageInterface<T> {
 
 /**
  * Storage implementation that use the browser session storage
+ * @param {boolean} listenExternalChanges - Update the store if the sessionStorage is updated from another page
  */
-export function sessionStorage<T>(): StorageInterface<T> {
+export function sessionStorage<T>(listenExternalChanges = false): StorageInterface<T> {
     if (typeof window !== "undefined" && window?.sessionStorage) {
-        return getBrowserStorage(window?.sessionStorage)
+        return getBrowserStorage(window.sessionStorage, listenExternalChanges)
     }
     console.warn("Unable to find the sessionStorage. No data will be persisted.")
     return noopStorage()
