@@ -31,6 +31,12 @@ There are 3 storages built-in:
 
 You can add more storages, you just need to implement the interface `StorageInterface`
 
+## Documentation
+
+Documentation and examples car be generated with `npm run doc`, next open `docs/index.html` with your favorite web browser.
+
+(Hint: If you don't want to generate the docs, a part of the example and documentation are available [here](.docs/README.md))
+
 ## Contributing
 
 Contributions are welcome. Please open up an issue or create PR if you would like to help out.
