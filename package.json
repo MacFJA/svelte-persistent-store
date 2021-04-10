@@ -1,6 +1,6 @@
 {
   "name": "@macfja/svelte-persistent-store",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "A Svelte store that keep its value through pages and reloads",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
