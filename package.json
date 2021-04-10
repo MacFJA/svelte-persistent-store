@@ -12,6 +12,7 @@
     "README.md"
   ],
   "dependencies": {
+    "idb-keyval": "^5.0.4",
     "js-cookies": "^1.0.4"
   },
   "devDependencies": {
@@ -62,6 +63,7 @@
     "persistent",
     "localStorage",
     "sessionStorage",
+    "indexedDB",
     "cookie",
     "svelte",
     "sveltejs"

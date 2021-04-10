@@ -1,3 +1,4 @@
+import { get, set, createStore, del } from "idb-keyval"
 import Cookies from "js-cookies/src/cookies.js"
 import type { Writable } from "svelte/store"
 
@@ -41,14 +42,16 @@ export interface StorageInterface<T> {
 export interface SelfUpdateStorageInterface<T> extends StorageInterface<T> {
     /**
      * Add a listener to the storage values changes
-     * @param {(key: string) => void} listener The listener callback function
+     * @param {string} key The key to listen
+     * @param {(newValue: T) => void} listener The listener callback function
      */
-    addListener(listener: (key: string) => void): void;
+    addListener(key: string, listener: (newValue: T) => void): void;
     /**
      * Remove a listener from the storage values changes
-     * @param {(key: string) => void} listener The listener callback function to remove
+     * @param {string} key The key that was listened
+     * @param {(newValue: T) => void} listener The listener callback function to remove
      */
-    removeListener(listener: (key: string) => void): void;
+    removeListener(key: string, listener: (newValue: T) => void): void;
 }
 
 /**
@@ -65,10 +68,8 @@ export function persist<T>(store: Writable<T>, storage: StorageInterface<T>, key
     }
 
     if ((storage as SelfUpdateStorageInterface<T>).addListener) {
-        (storage as SelfUpdateStorageInterface<T>).addListener(eventKey => {
-            if (eventKey === key) {
-                store.set(storage.getValue(key))
-            }
+        (storage as SelfUpdateStorageInterface<T>).addListener(key, newValue => {
+            store.set(newValue)
         })
     }
 
@@ -85,10 +86,13 @@ export function persist<T>(store: Writable<T>, storage: StorageInterface<T>, key
 }
 
 function getBrowserStorage(browserStorage: Storage, listenExternalChanges = false): SelfUpdateStorageInterface<any> {
-    const listeners: Array<(key: string) => void> = []
+    const listeners: Array<{key: string, listener: (newValue: any) => void}> = []
     const listenerFunction = (event: StorageEvent) => {
+        const eventKey = event.key
         if (event.storageArea === browserStorage) {
-            listeners.forEach(call => call(event.key))
+            listeners
+                .filter(({key}) => key === eventKey)
+                .forEach(({listener}) => listener(JSON.parse(event.newValue)))
         }
     }
     const connect = () => {
@@ -103,14 +107,14 @@ function getBrowserStorage(browserStorage: Storage, listenExternalChanges = fals
     }
 
     return {
-        addListener(listener: (key: string) => void) {
-            listeners.push(listener)
+        addListener(key: string, listener: (newValue: any) => void) {
+            listeners.push({key, listener})
             if (listeners.length === 1) {
                 connect()
             }
         },
-        removeListener(listener: (key: string) => void) {
-            const index = listeners.indexOf(listener)
+        removeListener(key: string, listener: (newValue: any) => void) {
+            const index = listeners.indexOf({key, listener})
             if (index !== -1) {
                 listeners.splice(index, 1)
             }
@@ -185,10 +189,72 @@ export function cookieStorage(): StorageInterface<any> {
 }
 
 /**
+ * Storage implementation that use the browser IndexedDB
+ */
+export function indexedDBStorage<T>(): SelfUpdateStorageInterface<T> {
+    if (typeof indexedDB !== "object" || typeof window === "undefined" || typeof window?.indexedDB !== "object") {
+        console.warn("Unable to find the IndexedDB. No data will be persisted.")
+        return noopSelfUpdateStorage()
+    }
+
+    const database = createStore("svelte-persist", "persist")
+    const listeners: Array<{key: string, listener: (newValue: T) => void}> = []
+    const listenerFunction = (eventKey: string, newValue: T) => {
+        if (newValue === undefined) {
+            return
+        }
+        listeners
+            .filter(({key}) => key === eventKey)
+            .forEach(({listener}) => listener(newValue))
+    }
+    return {
+        addListener(key: string, listener: (newValue: any) => void) {
+            listeners.push({key, listener})
+        },
+        removeListener(key: string, listener: (newValue: any) => void) {
+            const index = listeners.indexOf({key, listener})
+            if (index !== -1) {
+                listeners.splice(index, 1)
+            }
+        },
+        getValue(key: string): T | null {
+            get(key, database).then(value => listenerFunction(key, value))
+            return null
+        },
+        setValue(key: string, value: T): void {
+            set(key, value, database)
+        },
+        deleteValue(key: string): void {
+            del(key, database)
+        }
+    }
+}
+
+/**
  * Storage implementation that do nothing
  */
 export function noopStorage(): StorageInterface<any> {
     return {
+        getValue(): null {
+            return null
+        },
+        deleteValue() {
+            // Do nothing
+        },
+        setValue() {
+            // Do nothing
+        }
+    }
+}
+
+function noopSelfUpdateStorage(): SelfUpdateStorageInterface<any> {
+    return {
+        addListener() {
+            // Do nothing
+        },
+        removeListener() {
+            // Do nothing
+        },
         getValue(): null {
             return null
         },

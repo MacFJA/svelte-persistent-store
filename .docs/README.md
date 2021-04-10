@@ -9,3 +9,4 @@
 ## How to
 
 - [Add new storage](04-New-Storage.md)
+- [Add an asynchronous storage](05-New-Async-Storage.md)

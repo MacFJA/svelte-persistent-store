@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add external change listener for SessionStorage and LocalStorage
 - Add documentation
+- Add IndexedDB Storage
 
 ## [1.0.2]
 

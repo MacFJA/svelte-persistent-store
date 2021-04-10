@@ -19,7 +19,8 @@
     {
       "title": "How to",
       "pages": [
-        {"title": "Add new storage", "source": "/.docs/04-New-Storage.md"}
+        {"title": "Add new storage", "source": "/.docs/04-New-Storage.md"},
+        {"title": "Add an asynchronous storage", "source": ".docs/05-New-Async-Storage.md"}
       ]
     }
   ]

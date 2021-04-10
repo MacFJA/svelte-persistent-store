@@ -60,3 +60,26 @@
     <input name="email"><label><input type="checkbox" bind:checked={$newsLetterSubscription}> I want to receive news by email</label>
 </footer>
 ```
+
+## indexedDB storage
+
+```html
+<script>
+    import { persist, indexedDBStorage } from "@macfja/svelte-persistent-store"
+    import { writable } from "svelte/store"
+
+    const layout = persist(writable('2column'), indexedDBStorage(), 'myapp-layout')
+</script>
+
+<aside>
+    <label>
+        <span>Select the application layout:</span>
+        <select bind:value={$layout}>
+            <option value="2column">2 columns (Right)</option>
+            <option value="2column-left">2 columns (Left)</option>
+            <option value="stacked">Stacked</option>
+            <option value="stacked-rev">Stacked Reversed</option>
+        </select>
+    </label>
+</aside>
+```

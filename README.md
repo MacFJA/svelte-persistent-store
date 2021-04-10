@@ -23,11 +23,12 @@ $name = 'Jeanne Doe'
 
 ## Storages
 
-There are 3 storages built-in:
+There are 4 storages built-in:
 
  - `localStorage()`, that use `window.localStorage` to save values 
  - `sessionStorage()`, that use `window.sessionStorage` to save values 
  - `cookieStorage()`, that use `document.cookie` to save values 
+ - `indexedDBStorage()`, that use `window.indexedDB` to save values
 
 You can add more storages, you just need to implement the interface `StorageInterface`
 
