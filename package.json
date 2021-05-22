@@ -4,6 +4,13 @@
   "description": "A Svelte store that keep its value through pages and reloads",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
     "src/",
     "dist/",
