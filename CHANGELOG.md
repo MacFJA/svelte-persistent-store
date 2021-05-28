@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1]
+
+### Fixed
+
+- SyntaxError when the value can't be parsed as a JSON ([Issue#3])
+
+### Changed
+
+- Update (dev) dependencies version
+
 ## [1.1.0]
 
 ### Added
@@ -34,8 +44,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 First version
 
-[Unreleased]: https://github.com/MacFJA/svelte-persistent-store/compare/1.1.0...HEAD
+[Unreleased]: https://github.com/MacFJA/svelte-persistent-store/compare/1.1.1...HEAD
+[1.1.1]: https://github.com/MacFJA/svelte-persistent-store/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/MacFJA/svelte-persistent-store/compare/1.0.2...1.1.0
 [1.0.2]: https://github.com/MacFJA/svelte-persistent-store/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/MacFJA/svelte-persistent-store/compare/1.0.0...1.0.1
 [1.0.0]: https://github.com/MacFJA/svelte-persistent-store/releases/tag/1.0.0
+
+[Issue#3]: https://github.com/MacFJA/svelte-persistent-store/issues/3
