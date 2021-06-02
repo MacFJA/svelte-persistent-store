@@ -30,7 +30,7 @@ export interface StorageInterface<T> {
      * @param key The key/name of the value to save
      * @param value The value to save
      */
-    setValue(key: string, value:T): void,
+    setValue(key: string, value: T): void,
 
     /**
      * Remove a value from the storage
@@ -60,7 +60,7 @@ export interface SelfUpdateStorageInterface<T> extends StorageInterface<T> {
  * @param {StorageInterface} storage The storage to use
  * @param {string} key The name of the data key
  */
-export function persist<T>(store: Writable<T>, storage: StorageInterface<T>, key: string):PersistentStore<T> {
+export function persist<T>(store: Writable<T>, storage: StorageInterface<T>, key: string): PersistentStore<T> {
     const initialValue = storage.getValue(key)
 
     if (null !== initialValue) {
@@ -92,7 +92,16 @@ function getBrowserStorage(browserStorage: Storage, listenExternalChanges = fals
         if (event.storageArea === browserStorage) {
             listeners
                 .filter(({key}) => key === eventKey)
-                .forEach(({listener}) => listener(JSON.parse(event.newValue)))
+                .forEach(({listener}) => {
+                    let value = event.newValue
+                    try {
+                        value = JSON.parse(event.newValue)
+                    } catch (e) {
+                        // Do nothing
+                        // use the value "as is"
+                    }
+                    listener(value)
+                })
         }
     }
     const connect = () => {
@@ -122,10 +131,15 @@ function getBrowserStorage(browserStorage: Storage, listenExternalChanges = fals
                 disconnect()
             }
         },
-        getValue(key:string): any | null {
+        getValue(key: string): any | null {
             let value = browserStorage.getItem(key)
-            if (value !== null) {
-                value = JSON.parse(value)
+            if (value !== null && value !== undefined) {
+                try {
+                    value = JSON.parse(value)
+                } catch (e) {
+                    // Do nothing
+                    // use the value "as is"
+                }
             }
             return value
         },
@@ -172,12 +186,17 @@ export function cookieStorage(): StorageInterface<any> {
     }
 
     return {
-        getValue(key:string): any | null {
+        getValue(key: string): any | null {
             if (!Cookies.hasItem(key)) {
                 return null
             }
 
-            return JSON.parse(Cookies.getItem(key))
+            const value = Cookies.getItem(key)
+            try {
+                return JSON.parse(value)
+            } catch (e) {
+                return value
+            }
         },
         deleteValue(key: string) {
             Cookies.removeItem(key)
