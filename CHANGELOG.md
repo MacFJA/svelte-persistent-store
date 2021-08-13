@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Changed the Cookie lib to be able to set `SameSite` ([Issue#7], [PR#8])
+- (DEV) Update the dependencies
+
 ## [1.1.1]
 
 ### Fixed
@@ -52,3 +57,5 @@ First version
 [1.0.0]: https://github.com/MacFJA/svelte-persistent-store/releases/tag/1.0.0
 
 [Issue#3]: https://github.com/MacFJA/svelte-persistent-store/issues/3
+[Issue#7]: https://github.com/MacFJA/svelte-persistent-store/issues/7
+[PR#8]: https://github.com/MacFJA/svelte-persistent-store/pull/8

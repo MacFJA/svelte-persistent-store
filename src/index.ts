@@ -1,5 +1,5 @@
+import { get as getCookie, set as setCookie, erase as removeCookie } from "browser-cookies"
 import { get, set, createStore, del } from "idb-keyval"
-import Cookies from "js-cookies/src/cookies.js"
 import type { Writable } from "svelte/store"
 
 /**
@@ -187,11 +187,11 @@ export function cookieStorage(): StorageInterface<any> {
 
     return {
         getValue(key: string): any | null {
-            if (!Cookies.hasItem(key)) {
+            const value = getCookie(key)
+            if (value === null) {
                 return null
             }
 
-            const value = Cookies.getItem(key)
             try {
                 return JSON.parse(value)
             } catch (e) {
@@ -199,10 +199,13 @@ export function cookieStorage(): StorageInterface<any> {
             }
         },
         deleteValue(key: string) {
-            Cookies.removeItem(key)
+            removeCookie(key, { samesite: "Strict" })
         },
         setValue(key: string, value: any) {
-            Cookies.setItem(key, JSON.stringify(value))
+            setCookie(key,
+                JSON.stringify(value),
+                { samesite: "Strict" }
+            )
         }
     }
 }
