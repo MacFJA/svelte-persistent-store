@@ -3,6 +3,37 @@ import { get, set, createStore, del } from "idb-keyval"
 import type { Writable } from "svelte/store"
 
 /**
+ * Disabled warnings about missing/unavailable storages
+ */
+export function disableWarnings(): void { noWarnings = true }
+/**
+ * If set to true, no warning will be emitted if the requested Storage is not found.
+ * This option can be useful when the lib is used on a server.
+ */
+let noWarnings = false
+/**
+ * List of storages where the warning have already been displayed.
+ */
+const alreadyWarnFor:Array<string> = []
+
+/**
+ * Add a log to indicate that the requested Storage have not been found.
+ * @param {string} storageName
+ */
+const warnStorageNotFound = (storageName) => {
+    const isProduction = (typeof process !== "undefined" && process.env?.NODE_ENV === "production")
+
+    if (!noWarnings && alreadyWarnFor.indexOf(storageName) === -1 && !isProduction) {
+        let message = `Unable to find the ${storageName}. No data will be persisted.`
+        if (typeof window === "undefined") {
+            message += "\n" + "Are you running on a server? Most of storages are not available while running on a server."
+        }
+        console.warn(message)
+        alreadyWarnFor.push(storageName)
+    }
+}
+
+/**
  * A store that keep it's value in time.
  */
 export interface PersistentStore<T> extends Writable<T> {
@@ -160,7 +191,7 @@ export function localStorage<T>(listenExternalChanges = false): StorageInterface
     if (typeof window !== "undefined" && window?.localStorage) {
         return getBrowserStorage(window.localStorage, listenExternalChanges)
     }
-    console.warn("Unable to find the localStorage. No data will be persisted.")
+    warnStorageNotFound("window.localStorage")
     return noopStorage()
 }
 
@@ -172,7 +203,7 @@ export function sessionStorage<T>(listenExternalChanges = false): StorageInterfa
     if (typeof window !== "undefined" && window?.sessionStorage) {
         return getBrowserStorage(window.sessionStorage, listenExternalChanges)
     }
-    console.warn("Unable to find the sessionStorage. No data will be persisted.")
+    warnStorageNotFound("window.sessionStorage")
     return noopStorage()
 }
 
@@ -181,7 +212,7 @@ export function sessionStorage<T>(listenExternalChanges = false): StorageInterfa
  */
 export function cookieStorage(): StorageInterface<any> {
     if (typeof document === "undefined" || typeof document?.cookie !== "string") {
-        console.warn("Unable to find the cookies. No data will be persisted.")
+        warnStorageNotFound("document.cookies")
         return noopStorage()
     }
 
@@ -215,7 +246,7 @@ export function cookieStorage(): StorageInterface<any> {
  */
 export function indexedDBStorage<T>(): SelfUpdateStorageInterface<T> {
     if (typeof indexedDB !== "object" || typeof window === "undefined" || typeof window?.indexedDB !== "object") {
-        console.warn("Unable to find the IndexedDB. No data will be persisted.")
+        warnStorageNotFound("IndexedDB")
         return noopSelfUpdateStorage()
     }
 
