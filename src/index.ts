@@ -164,7 +164,7 @@ function getBrowserStorage(browserStorage: Storage, listenExternalChanges = fals
         },
         getValue(key: string): any | null {
             let value = browserStorage.getItem(key)
-            if (value !== null && value !== undefined) {
+            if (value !== null && value !== undefined && value !== "undefined") {
                 try {
                     value = JSON.parse(value)
                 } catch (e) {
@@ -172,12 +172,19 @@ function getBrowserStorage(browserStorage: Storage, listenExternalChanges = fals
                     // use the value "as is"
                 }
             }
+            if (value === "undefined") {
+                return undefined
+            }
             return value
         },
         deleteValue(key: string) {
             browserStorage.removeItem(key)
         },
         setValue(key: string, value: any) {
+            if (value === undefined) {
+                browserStorage.setItem(key, "undefined")
+                return
+            }
             browserStorage.setItem(key, JSON.stringify(value))
         }
     }
@@ -222,6 +229,9 @@ export function cookieStorage(): StorageInterface<any> {
             if (value === null) {
                 return null
             }
+            if (value === "undefined") {
+                return undefined
+            }
 
             try {
                 return JSON.parse(value)
@@ -233,6 +243,10 @@ export function cookieStorage(): StorageInterface<any> {
             removeCookie(key, { samesite: "Strict" })
         },
         setValue(key: string, value: any) {
+            if (value === undefined) {
+                setCookie(key, "undefined", { samesite: "Strict" })
+                return
+            }
             setCookie(key,
                 JSON.stringify(value),
                 { samesite: "Strict" }

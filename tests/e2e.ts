@@ -8,6 +8,18 @@ const cookieInput = Selector('#cookieInput'),
     sessionInput = Selector('#sessionInput'),
     indexedInput = Selector('#indexedInput'),
     documentCookie = Selector('#documentCookie'),
+    undefinedValue = Selector('#undefinedTest code'),
+    undefinedType = Selector('#undefinedTest var'),
+    undefinedValue2 = Selector('#undefinedTest2 code'),
+    undefinedType2 = Selector('#undefinedTest2 var'),
+    undefinedValue3 = Selector('#undefinedTest3 code'),
+    undefinedType3 = Selector('#undefinedTest3 var'),
+    nullValue = Selector('#nullTest code'),
+    nullType = Selector('#nullTest var'),
+    nullValue2 = Selector('#nullTest2 code'),
+    nullType2 = Selector('#nullTest2 var'),
+    nullValue3 = Selector('#nullTest3 code'),
+    nullType3 = Selector('#nullTest3 var'),
     reloadButton = Selector('#reloadButton'),
     clearButton = Selector('#clearButton')
 
@@ -20,6 +32,18 @@ test("Initial state", async t => {
         .expect(sessionInput.value).eql('Bar')
         .expect(indexedInput.value).eql('Hello')
         .expect(documentCookie.textContent).contains("sps-userName=%22John%22")
+        .expect(undefinedValue.textContent).eql('undefined')
+        .expect(undefinedType.textContent).eql('undefined')
+        .expect(undefinedValue2.textContent).eql('undefined')
+        .expect(undefinedType2.textContent).eql('undefined')
+        .expect(undefinedValue3.textContent).eql('undefined')
+        .expect(undefinedType3.textContent).eql('undefined')
+        .expect(nullValue.textContent).eql('null')
+        .expect(nullType.textContent).eql('object')
+        .expect(nullValue2.textContent).eql('null')
+        .expect(nullType2.textContent).eql('object')
+        .expect(nullValue3.textContent).eql('null')
+        .expect(nullType3.textContent).eql('object')
 })
 
 test("Cookie storage", async t => {
@@ -67,4 +91,26 @@ test("IndexedDB storage", async t => {
         .click(clearButton)
         .click(reloadButton)
         .expect(indexedInput.value).eql("Hello")
+})
+
+test("Undefined value in storage", async t => {
+    await t
+        .click(reloadButton)
+        .expect(undefinedValue.textContent).eql('undefined')
+        .expect(undefinedType.textContent).eql('undefined')
+        .expect(undefinedValue2.textContent).eql('undefined')
+        .expect(undefinedType2.textContent).eql('undefined')
+        .expect(undefinedValue3.textContent).eql('undefined')
+        .expect(undefinedType3.textContent).eql('undefined')
+})
+
+test("Null value in storage", async t => {
+    await t
+        .click(reloadButton)
+        .expect(nullValue.textContent).eql('null')
+        .expect(nullType.textContent).eql('object')
+        .expect(nullValue2.textContent).eql('null')
+        .expect(nullType2.textContent).eql('object')
+        .expect(nullValue3.textContent).eql('null')
+        .expect(nullType3.textContent).eql('object')
 })
