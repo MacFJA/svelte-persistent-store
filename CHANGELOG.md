@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Possibility to disable console warnings ([Issue#9])
+- `undefined` value not handled ([Issue#11])
 
 ## [1.2.0]
 
@@ -66,4 +67,5 @@ First version
 [Issue#3]: https://github.com/MacFJA/svelte-persistent-store/issues/3
 [Issue#7]: https://github.com/MacFJA/svelte-persistent-store/issues/7
 [Issue#9]: https://github.com/MacFJA/svelte-persistent-store/issues/9
+[Issue#11]: https://github.com/MacFJA/svelte-persistent-store/issues/11
 [PR#8]: https://github.com/MacFJA/svelte-persistent-store/pull/8
