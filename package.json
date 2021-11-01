@@ -37,7 +37,7 @@
     "svelte": "^3.42.1",
     "svelte-check": "^1.6.0",
     "svelte-preprocess": "^4.7.4",
-    "testcafe": "<1.15.0",
+    "testcafe": "<=1.16.1",
     "tslib": "^2.3.0",
     "typedoc": "^0.20.26",
     "typedoc-plugin-pages": "^1.1.0",
