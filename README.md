@@ -34,7 +34,7 @@ You can add more storages, you just need to implement the interface `StorageInte
 
 ## Documentation
 
-Documentation and examples car be generated with `npm run doc`, next open `docs/index.html` with your favorite web browser.
+Documentation and examples can be generated with `npm run doc`, next open `docs/index.html` with your favorite web browser.
 
 (Hint: If you don't want to generate the docs, a part of the example and documentation are available [here](.docs/README.md))
 
