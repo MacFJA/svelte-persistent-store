@@ -1,4 +1,5 @@
 import { get as getCookie, set as setCookie, erase as removeCookie } from "browser-cookies"
+import ESSerializer from "esserializer"
 import { get, set, createStore, del } from "idb-keyval"
 import type { Writable } from "svelte/store"
 
@@ -31,6 +32,37 @@ const warnStorageNotFound = (storageName) => {
         console.warn(message)
         alreadyWarnFor.push(storageName)
     }
+}
+
+const allowedClasses = []
+/**
+ * Add a class to the allowed list of classes to be serialized
+ * @param classDef The class to add to the list
+ */
+export const addSerializableClass = (classDef: () => unknown): void => { allowedClasses.push(classDef) }
+
+const serialize = (value: unknown): string => ESSerializer.serialize(value)
+const deserialize = (value: string): unknown => {
+    // @TODO: to remove in the next major
+    if (value === "undefined") {
+        return undefined
+    }
+
+    if (value !== null && value !== undefined) {
+        try {
+            return ESSerializer.deserialize(value, allowedClasses)
+        } catch (e) {
+            // Do nothing
+            // use the value "as is"
+        }
+        try {
+            return JSON.parse(value)
+        } catch (e) {
+            // Do nothing
+            // use the value "as is"
+        }
+    }
+    return value
 }
 
 /**
@@ -124,14 +156,7 @@ function getBrowserStorage(browserStorage: Storage, listenExternalChanges = fals
             listeners
                 .filter(({key}) => key === eventKey)
                 .forEach(({listener}) => {
-                    let value = event.newValue
-                    try {
-                        value = JSON.parse(event.newValue)
-                    } catch (e) {
-                        // Do nothing
-                        // use the value "as is"
-                    }
-                    listener(value)
+                    listener(deserialize(event.newValue))
                 })
         }
     }
@@ -163,29 +188,14 @@ function getBrowserStorage(browserStorage: Storage, listenExternalChanges = fals
             }
         },
         getValue(key: string): any | null {
-            let value = browserStorage.getItem(key)
-            if (value !== null && value !== undefined && value !== "undefined") {
-                try {
-                    value = JSON.parse(value)
-                } catch (e) {
-                    // Do nothing
-                    // use the value "as is"
-                }
-            }
-            if (value === "undefined") {
-                return undefined
-            }
-            return value
+            const value = browserStorage.getItem(key)
+            return deserialize(value)
         },
         deleteValue(key: string) {
             browserStorage.removeItem(key)
         },
         setValue(key: string, value: any) {
-            if (value === undefined) {
-                browserStorage.setItem(key, "undefined")
-                return
-            }
-            browserStorage.setItem(key, JSON.stringify(value))
+            browserStorage.setItem(key, serialize(value))
         }
     }
 }
@@ -226,29 +236,14 @@ export function cookieStorage(): StorageInterface<any> {
     return {
         getValue(key: string): any | null {
             const value = getCookie(key)
-            if (value === null) {
-                return null
-            }
-            if (value === "undefined") {
-                return undefined
-            }
-
-            try {
-                return JSON.parse(value)
-            } catch (e) {
-                return value
-            }
+            return deserialize(value)
         },
         deleteValue(key: string) {
             removeCookie(key, { samesite: "Strict" })
         },
         setValue(key: string, value: any) {
-            if (value === undefined) {
-                setCookie(key, "undefined", { samesite: "Strict" })
-                return
-            }
             setCookie(key,
-                JSON.stringify(value),
+                serialize(value),
                 { samesite: "Strict" }
             )
         }
@@ -285,11 +280,11 @@ export function indexedDBStorage<T>(): SelfUpdateStorageInterface<T> {
             }
         },
         getValue(key: string): T | null {
-            get(key, database).then(value => listenerFunction(key, value))
+            get(key, database).then(value => listenerFunction(key, (deserialize(value) as T)))
             return null
         },
         setValue(key: string, value: T): void {
-            set(key, value, database)
+            set(key, serialize(value), database)
         },
         deleteValue(key: string): void {
             del(key, database)

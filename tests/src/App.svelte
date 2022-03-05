@@ -1,6 +1,28 @@
 <script>
-    import {persist, cookieStorage, localStorage, sessionStorage, indexedDBStorage} from "../../src/index"
+    import {
+        persist,
+        cookieStorage,
+        localStorage,
+        sessionStorage,
+        indexedDBStorage,
+        addSerializableClass
+    } from "../../src/index"
     import { writable } from "svelte/store"
+
+    export class NameHolder {
+        constructor() {
+            this.name = "John"
+        }
+
+        setName(name) {
+            this.name = name
+        }
+        getName() {
+            return this.name
+        }
+    }
+
+    addSerializableClass(NameHolder)
 
     let cookieExample = persist(writable('John'), cookieStorage(), 'sps-userName')
     let localExample = persist(writable('Foo'), localStorage(), 'sps-action')
@@ -12,6 +34,7 @@
     let nullExample = persist(writable(null), sessionStorage(), 'sps-null')
     let nullExample2 = persist(writable(null), indexedDBStorage(), 'sps-null')
     let nullExample3 = persist(writable(null), cookieStorage(), 'sps-null')
+    let classExample = persist(writable(new NameHolder()), localStorage(), 'sps-class');
 
     let cookie = ''
 
@@ -77,6 +100,12 @@
     </fieldset>
 </fieldset>
 
+<fieldset>
+    <legend>Class transform</legend>
+    The current name is: <var id="classValue">{$classExample.getName()}</var>
+    <button id="classButton" on:click={() => { $classExample.setName('Jeanne'); $classExample = $classExample}}>Change name to Jeanne</button>
+</fieldset>
+
 <button id="reloadButton" on:click={() => window.location.reload()}>Reload the page</button>
 
 <button id="clearButton" on:click={() => {
@@ -90,4 +119,5 @@
     nullExample.delete()
     nullExample2.delete()
     nullExample3.delete()
+    classExample.delete()
 }}>Clear storages</button>

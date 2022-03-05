@@ -20,6 +20,8 @@ const cookieInput = Selector('#cookieInput'),
     nullType2 = Selector('#nullTest2 var'),
     nullValue3 = Selector('#nullTest3 code'),
     nullType3 = Selector('#nullTest3 var'),
+    classValue = Selector('#classValue'),
+    classButton = Selector('#classButton'),
     reloadButton = Selector('#reloadButton'),
     clearButton = Selector('#clearButton')
 
@@ -44,6 +46,7 @@ test("Initial state", async t => {
         .expect(nullType2.textContent).eql('object')
         .expect(nullValue3.textContent).eql('null')
         .expect(nullType3.textContent).eql('object')
+        .expect(classValue.textContent).eql('John')
 })
 
 test("Cookie storage", async t => {
@@ -113,4 +116,16 @@ test("Null value in storage", async t => {
         .expect(nullType2.textContent).eql('object')
         .expect(nullValue3.textContent).eql('null')
         .expect(nullType3.textContent).eql('object')
+})
+
+test("Class transform", async t => {
+    await t
+        .expect(classValue.textContent).eql("John")
+        .click(classButton)
+        .expect(classValue.textContent).eql("Jeanne")
+        .click(reloadButton)
+        .expect(classValue.textContent).eql("Jeanne")
+        .click(clearButton)
+        .click(reloadButton)
+        .expect(classValue.textContent).eql("John")
 })

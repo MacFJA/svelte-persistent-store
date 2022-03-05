@@ -21,6 +21,12 @@ $name = 'Jeanne Doe'
 // if you reload the page the value of $name is 'Jeanne Doe'
 ```
 
+## Features
+
+- Multiple storages (Allow to have the best suited usage depending on your use case)
+- Work with any Svelte store
+- Work with classes, objects, primitive
+
 ## Storages
 
 There are 4 storages built-in:
