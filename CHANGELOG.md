@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Possibility to disable console warnings ([Issue#9])
 - `undefined` value not handled ([Issue#11])
 
+### Changed
+
+- Change how data are serialized/deserialized to handle class
+
+### Fixed
+
+- Classes can't be persisted
+
 ## [1.2.0]
 
 ### Changed
