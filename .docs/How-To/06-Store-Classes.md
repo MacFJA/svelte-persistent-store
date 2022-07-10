@@ -6,7 +6,7 @@ Class are complex object that contains functions and logic that do more than hol
 
 To store classes we need to serialize them into a special form that we will be able to reverse, to do so we need to register the class, so we know that we have something to do with it.
 
-# Example
+## Example
 
 ```html
 <script>

@@ -148,6 +148,34 @@ export function persist<T>(store: Writable<T>, storage: StorageInterface<T>, key
     }
 }
 
+const sharedCookieStorage = createCookieStorage(),
+    sharedLocalStorage:StorageInterface<any> = createLocalStorage(),
+    sharedSessionStorage:StorageInterface<any> = createSessionStorage()
+/**
+ * Persist a store into a cookie
+ * @param {Writable<*>} store The store to enhance
+ * @param {string} cookieName The name of the cookie
+ */
+export function persistCookie<T>(store: Writable<T>, cookieName: string): PersistentStore<T> {
+    return persist(store, sharedCookieStorage, cookieName)
+}
+/**
+ * Persist a store into the browser session storage
+ * @param {Writable<*>} store The store to enhance
+ * @param {string} key The name of the key in the browser session storage
+ */
+export function persistBrowserSession<T>(store: Writable<T>, key: string): PersistentStore<T> {
+    return persist(store, sharedSessionStorage, key)
+}
+/**
+ * Persist a store into the browser local storage
+ * @param {Writable<*>} store The store to enhance
+ * @param {string} key The name of the key in the browser local storage
+ */
+export function persistBrowserLocal<T>(store: Writable<T>, key: string): PersistentStore<T> {
+    return persist(store, sharedLocalStorage, key)
+}
+
 function getBrowserStorage(browserStorage: Storage, listenExternalChanges = false): SelfUpdateStorageInterface<any> {
     const listeners: Array<{key: string, listener: (newValue: any) => void}> = []
     const listenerFunction = (event: StorageEvent) => {
@@ -204,33 +232,33 @@ function getBrowserStorage(browserStorage: Storage, listenExternalChanges = fals
  * Storage implementation that use the browser local storage
  * @param {boolean} listenExternalChanges - Update the store if the localStorage is updated from another page
  */
-export function localStorage<T>(listenExternalChanges = false): StorageInterface<T> {
+export function createLocalStorage<T>(listenExternalChanges = false): StorageInterface<T> {
     if (typeof window !== "undefined" && window?.localStorage) {
         return getBrowserStorage(window.localStorage, listenExternalChanges)
     }
     warnStorageNotFound("window.localStorage")
-    return noopStorage()
+    return createNoopStorage()
 }
 
 /**
  * Storage implementation that use the browser session storage
  * @param {boolean} listenExternalChanges - Update the store if the sessionStorage is updated from another page
  */
-export function sessionStorage<T>(listenExternalChanges = false): StorageInterface<T> {
+export function createSessionStorage<T>(listenExternalChanges = false): StorageInterface<T> {
     if (typeof window !== "undefined" && window?.sessionStorage) {
         return getBrowserStorage(window.sessionStorage, listenExternalChanges)
     }
     warnStorageNotFound("window.sessionStorage")
-    return noopStorage()
+    return createNoopStorage()
 }
 
 /**
  * Storage implementation that use the browser cookies
  */
-export function cookieStorage(): StorageInterface<any> {
+export function createCookieStorage(): StorageInterface<any> {
     if (typeof document === "undefined" || typeof document?.cookie !== "string") {
         warnStorageNotFound("document.cookies")
-        return noopStorage()
+        return createNoopStorage()
     }
 
     return {
@@ -253,10 +281,10 @@ export function cookieStorage(): StorageInterface<any> {
 /**
  * Storage implementation that use the browser IndexedDB
  */
-export function indexedDBStorage<T>(): SelfUpdateStorageInterface<T> {
+export function createIndexedDBStorage<T>(): SelfUpdateStorageInterface<T> {
     if (typeof indexedDB !== "object" || typeof window === "undefined" || typeof window?.indexedDB !== "object") {
         warnStorageNotFound("IndexedDB")
-        return noopSelfUpdateStorage()
+        return createNoopSelfUpdateStorage()
     }
 
     const database = createStore("svelte-persist", "persist")
@@ -295,7 +323,7 @@ export function indexedDBStorage<T>(): SelfUpdateStorageInterface<T> {
 /**
  * Storage implementation that do nothing
  */
-export function noopStorage(): StorageInterface<any> {
+export function createNoopStorage(): StorageInterface<any> {
     return {
         getValue(): null {
             return null
@@ -309,7 +337,7 @@ export function noopStorage(): StorageInterface<any> {
     }
 }
 
-function noopSelfUpdateStorage(): SelfUpdateStorageInterface<any> {
+function createNoopSelfUpdateStorage(): SelfUpdateStorageInterface<any> {
     return {
         addListener() {
             // Do nothing
@@ -327,4 +355,15 @@ function noopSelfUpdateStorage(): SelfUpdateStorageInterface<any> {
             // Do nothing
         }
     }
+}
+
+export {
+    // @deprecate
+    createNoopStorage as noopStorage,
+    // @deprecate
+    createLocalStorage as localStorage,
+    // @deprecate
+    createSessionStorage as sessionStorage,
+    // @deprecate
+    createIndexedDBStorage as indexedDBStorage
 }

@@ -1,3 +1,5 @@
+# Reuse a store across an application
+
 There are, at least, 3 ways to have the same store between components.
 
 1. Recreate the same code definition in the second component
@@ -16,7 +18,7 @@ Creating the component in a separate JS/TS file, the store is not _"attached"_ t
 
 Here an example of those 3 implementations
 
-### Duplication definition in every component
+## Duplication definition in every component
 
 ```html
 <!-- Component1.svelte -->
@@ -43,7 +45,7 @@ Here an example of those 3 implementations
 </script>
 ```
 
-### Context module
+## Context module
 
 ```html
 <!-- Component1.svelte -->
@@ -67,7 +69,7 @@ Here an example of those 3 implementations
 </script>
 ```
 
-### External definition
+## External definition
 
 ```js
 // stores.js

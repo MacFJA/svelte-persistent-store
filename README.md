@@ -11,14 +11,25 @@ npm install @macfja/svelte-persistent-store
 ## Usage
 
 ```javascript
-import { persist, localStorage } from "@macfja/svelte-persistent-store"
+import { persist, createLocalStorage } from "@macfja/svelte-persistent-store"
 import { writable } from "svelte/store"
 
-let name = persist(writable('John'), localStorage(), 'name')
+let name = persist(writable('John'), createLocalStorage(), 'name')
 
 $name = 'Jeanne Doe'
 
 // if you reload the page the value of $name is 'Jeanne Doe'
+```
+
+```javascript
+import { persistBrowserSession } from "@macfja/svelte-persistent-store"
+import { writable } from "svelte/store"
+
+let name = persistBrowserSession(writable('Unsaved'), 'document-name')
+
+$title = 'My Document'
+
+// if you reload the page the value of $title is 'My Document'
 ```
 
 ## Features
@@ -31,10 +42,10 @@ $name = 'Jeanne Doe'
 
 There are 4 storages built-in:
 
- - `localStorage()`, that use `window.localStorage` to save values 
- - `sessionStorage()`, that use `window.sessionStorage` to save values 
- - `cookieStorage()`, that use `document.cookie` to save values 
- - `indexedDBStorage()`, that use `window.indexedDB` to save values
+ - `createLocalStorage()`, that use `window.localStorage` to save values 
+ - `createSessionStorage()`, that use `window.sessionStorage` to save values 
+ - `createCookieStorage()`, that use `document.cookie` to save values 
+ - `createIndexedDBStorage()`, that use `window.indexedDB` to save values
 
 You can add more storages, you just need to implement the interface `StorageInterface`
 
