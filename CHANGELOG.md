@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New alias for persisting into Browser session storage (`persistBrowserSession`)
 - New alias for persisting into cookie storage (`persistCookie`)
 - New storage (wrapper) `createEncryptedStorage` ([Issue#21])
+- Add basic type definitions in README ([Issue#19])
 
 ### Changed
 
@@ -101,6 +102,7 @@ First version
 [Issue#9]: https://github.com/MacFJA/svelte-persistent-store/issues/9
 [Issue#11]: https://github.com/MacFJA/svelte-persistent-store/issues/11
 [Issue#18]: https://github.com/MacFJA/svelte-persistent-store/issues/18
+[Issue#19]: https://github.com/MacFJA/svelte-persistent-store/issues/19
 [Issue#20]: https://github.com/MacFJA/svelte-persistent-store/issues/20
 [Issue#21]: https://github.com/MacFJA/svelte-persistent-store/issues/21
 [PR#8]: https://github.com/MacFJA/svelte-persistent-store/pull/8

@@ -56,6 +56,19 @@ Documentation and examples can be generated with `npm run doc`, next open `docs/
 
 (Hint: If you don't want to generate the docs, a part of the example and documentation are available [here](.docs/README.md))
 
+### Types
+
+The persist function will return a new Store with type `PersistentStore<T>`.
+
+The full signature of `persist` is:
+```typescript
+declare function persist<T>(store: Writable<T>, storage: StorageInterface<T>, key: string): PersistentStore<T>
+```
+
+The persist function add a `delete` function on the store.
+
+More information about types can be found in the generated `types/index.d.ts` (`npm run prebuild`) or in the generated documentation (`npm run doc`).
+
 ## Contributing
 
 Contributions are welcome. Please open up an issue or create PR if you would like to help out.
