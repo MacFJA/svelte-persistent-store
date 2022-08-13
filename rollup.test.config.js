@@ -1,20 +1,27 @@
-import svelte from 'rollup-plugin-svelte';
-import resolve from '@rollup/plugin-node-resolve';
-import typescript from "@rollup/plugin-typescript";
-import commonjs from "@rollup/plugin-commonjs";
-import autoPreprocess from 'svelte-preprocess';
+import commonjs from "@rollup/plugin-commonjs"
+import resolve from "@rollup/plugin-node-resolve"
+import sucrase from "@rollup/plugin-sucrase"
+import svelte from "rollup-plugin-svelte"
+import autoPreprocess from "svelte-preprocess"
 
 export default {
-    input: 'tests/src/App.svelte',
+    input: "tests/src/App.svelte",
     output: [
-        { file: 'tests/build/app.js', 'format': 'iife', name: 'app' }
+        { file: "tests/build/app.js", "format": "iife", name: "app" }
     ],
     plugins: [
         svelte({
             preprocess: autoPreprocess()
         }),
-        typescript(),
-        commonjs(),
-        resolve()
+        sucrase({
+            exclude: ["dist/*"],
+            include: ["src/*"],
+            transforms: ["typescript"],
+            disableESTransforms: true
+        }),
+        commonjs({ignore: ["crypto", "util"]}),
+        resolve({
+            extensions: [".mjs", ".js", ".json", ".node", ".ts"]
+        })
     ]
-};
+}

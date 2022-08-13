@@ -1,3 +1,7 @@
+---
+name: Create a new asynchronous storage
+order: 2
+---
 # Create a new asynchronous storage 
 
 There is a workaround (trickery) to work with asynchronous data storage.

@@ -1,3 +1,7 @@
+---
+name: Persist a JavaScript class
+order: 3
+---
 # Persist a JavaScript class
 
 The storage of classes is a bit more involving that simple object or array.
@@ -10,7 +14,7 @@ To store classes we need to serialize them into a special form that we will be a
 
 ```html
 <script>
-    import { persist, localStorage, addSerializableClass } from "@macfja/svelte-persistent-store"
+    import { persist, createLocalStorage, addSerializableClass } from "@macfja/svelte-persistent-store"
     import { writable } from "svelte/store"
 
     export class NameHolder {
@@ -29,7 +33,7 @@ To store classes we need to serialize them into a special form that we will be a
     // Register the class
     addSerializableClass(NameHolder);
 
-    let classStore = persist(writable(new NameHolder()), localStorage(), 'user-name');
+    let classStore = persist(writable(new NameHolder()), createLocalStorage(), 'user-name');
     
     function updateName() {
         $classStore.setName('Jeanne');

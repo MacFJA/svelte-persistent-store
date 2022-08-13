@@ -1,3 +1,7 @@
+---
+name: Reuse a store across an application
+order: 2
+---
 # Reuse a store across an application
 
 There are, at least, 3 ways to have the same store between components.
@@ -23,10 +27,10 @@ Here an example of those 3 implementations
 ```html
 <!-- Component1.svelte -->
 <script>
-  import { persist, localStorage } from "@macfja/svelte-persistent-store"
+  import { persist, createLocalStorage } from "@macfja/svelte-persistent-store"
   import { writable } from "svelte/store"
 
-  let name = persist(writable("John"), localStorage(), "name")
+  let name = persist(writable("John"), createLocalStorage(), "name")
 
   $name = 'Jeanne Doe'
 </script>
@@ -35,11 +39,11 @@ Here an example of those 3 implementations
 ```html
 <!-- Component2.svelte -->
 <script>
-  import { persist, localStorage } from "@macfja/svelte-persistent-store"
+  import { persist, createLocalStorage } from "@macfja/svelte-persistent-store"
   import { writable } from "svelte/store"
   import { onMount } from "svelte"
 
-  let name = persist(writable("Foobar"), localStorage(), "name")
+  let name = persist(writable("Foobar"), createLocalStorage(), "name")
 
   onMount(() => { alert($name) }) // If Component2 is loaded/mount after Component1 the alert will be "Jeanne Doe"
 </script>
@@ -50,10 +54,10 @@ Here an example of those 3 implementations
 ```html
 <!-- Component1.svelte -->
 <script context="module">
-  import { persist, localStorage } from "@macfja/svelte-persistent-store"
+  import { persist, createLocalStorage } from "@macfja/svelte-persistent-store"
   import { writable } from "svelte/store"
 
-  export let name = persist(writable("John"), localStorage(), "name")
+  export let name = persist(writable("John"), createLocalStorage(), "name")
 </script>
 <script>
   $name = "Jeanne Doe"
@@ -73,10 +77,10 @@ Here an example of those 3 implementations
 
 ```js
 // stores.js
-import { persist, localStorage } from "@macfja/svelte-persistent-store"
+import { persist, createLocalStorage } from "@macfja/svelte-persistent-store"
 import { writable } from "svelte/store"
 
-export let name = persist(writable("John"), localStorage(), "name")
+export let name = persist(writable("John"), createLocalStorage(), "name")
 ```
 &nbsp;
 ```html

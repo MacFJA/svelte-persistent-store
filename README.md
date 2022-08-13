@@ -40,12 +40,13 @@ $title = 'My Document'
 
 ## Storages
 
-There are 4 storages built-in:
+There are 5 storages built-in:
 
  - `createLocalStorage()`, that use `window.localStorage` to save values 
  - `createSessionStorage()`, that use `window.sessionStorage` to save values 
  - `createCookieStorage()`, that use `document.cookie` to save values 
  - `createIndexedDBStorage()`, that use `window.indexedDB` to save values
+ - `createEncryptedStorage()`, that wrap a storage to encrypt data (and key)
 
 You can add more storages, you just need to implement the interface `StorageInterface`
 

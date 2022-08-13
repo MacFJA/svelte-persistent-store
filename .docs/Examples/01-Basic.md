@@ -1,3 +1,7 @@
+---
+name: Basic examples
+order: 1
+---
 # Basic examples
 
 ## Local Storage
@@ -65,10 +69,10 @@
 
 ```html
 <script>
-    import { persist, indexedDBStorage } from "@macfja/svelte-persistent-store"
+    import { persist, createIndexedDBStorage } from "@macfja/svelte-persistent-store"
     import { writable } from "svelte/store"
 
-    const layout = persist(writable('2column'), indexedDBStorage(), 'myapp-layout')
+    const layout = persist(writable('2column'), createIndexedDBStorage(), 'myapp-layout')
 </script>
 
 <aside>

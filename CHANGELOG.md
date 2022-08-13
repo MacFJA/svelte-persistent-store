@@ -11,13 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New alias for persisting into Browser local storage (`persistBrowserLocal`)
 - New alias for persisting into Browser session storage (`persistBrowserSession`)
 - New alias for persisting into cookie storage (`persistCookie`)
+- New storage (wrapper) `createEncryptedStorage`
 
 ### Changed
 
-- (dev) New lib to generate documentation
 - Change name of functions that create storage
+- Change the data serializer
+- (dev) New lib to generate documentation
+- (dev) Validate code style on configuration files
 
-### Deprecated
+### Removed
 
 - `noopStorage()` use `createNoopStorage()` instead
 - `localStorage()` use `createLocalStorage()` instead

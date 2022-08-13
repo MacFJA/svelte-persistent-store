@@ -1,3 +1,7 @@
+---
+name: Create new storage
+order: 1
+---
 # Create new storage
 
 New storages can be added. They need to implement the interface `StorageInterface<T>`.
