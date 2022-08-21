@@ -6,6 +6,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- New alias for persisting into Browser local storage (`persistBrowserLocal`)
+- New alias for persisting into Browser session storage (`persistBrowserSession`)
+- New alias for persisting into cookie storage (`persistCookie`)
+- New storage (wrapper) `createEncryptedStorage` ([Issue#21])
+- Add basic type definitions in README ([Issue#19])
+
+### Changed
+
+- Change name of functions that create storage
+- Change the data serializer ([Issue#18], [Issue#20])
+- (dev) New lib to generate documentation
+- (dev) Validate code style on configuration files
+
+### Removed
+
+- `noopStorage()` use `createNoopStorage()` instead
+- `localStorage()` use `createLocalStorage()` instead
+- `sessionStorage()` use `createSessionStorage()` instead
+- `indexedDBStorage()` use `createIndexedDBStorage()` instead
+
 ## [1.3.0]
 
 ### Added
@@ -79,4 +101,8 @@ First version
 [Issue#7]: https://github.com/MacFJA/svelte-persistent-store/issues/7
 [Issue#9]: https://github.com/MacFJA/svelte-persistent-store/issues/9
 [Issue#11]: https://github.com/MacFJA/svelte-persistent-store/issues/11
+[Issue#18]: https://github.com/MacFJA/svelte-persistent-store/issues/18
+[Issue#19]: https://github.com/MacFJA/svelte-persistent-store/issues/19
+[Issue#20]: https://github.com/MacFJA/svelte-persistent-store/issues/20
+[Issue#21]: https://github.com/MacFJA/svelte-persistent-store/issues/21
 [PR#8]: https://github.com/MacFJA/svelte-persistent-store/pull/8

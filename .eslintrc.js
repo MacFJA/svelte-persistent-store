@@ -40,6 +40,11 @@ module.exports = {
         "@typescript-eslint/no-explicit-any": ["off"]
     },
     "settings": {
+        "import/resolver": {
+            "node": {
+                "extensions": [".js", ".ts"]
+            },
+        },
         "import/extensions": [".js"],
     }
 }

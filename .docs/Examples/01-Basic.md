@@ -1,13 +1,17 @@
+---
+name: Basic examples
+order: 1
+---
 # Basic examples
 
 ## Local Storage
 
 ```html
 <script>
-    import { persist, localStorage } from "@macfja/svelte-persistent-store"
+    import { persistBrowserLocal } from "@macfja/svelte-persistent-store"
     import { writable } from "svelte/store"
     
-    const theme = persist(writable('light'), localStorage(), 'myapp-theme')
+    const theme = persistBrowserLocal(writable('light'), 'myapp-theme')
 </script>
 <aside>
     <label>
@@ -25,11 +29,11 @@
 
 ```html
 <script>
-    import { persist, sessionStorage } from "@macfja/svelte-persistent-store"
+    import { persistBrowserSession } from "@macfja/svelte-persistent-store"
     import { writable } from "svelte/store"
     
-    const currentDocumentTitle = persist(writable('Unsaved document'), sessionStorage(), 'myapp-new-document-title')
-    const currentDocumentContent = persist(writable('Lorem ipsum'), sessionStorage(), 'myapp-new-document-content')
+    const currentDocumentTitle = persistBrowserSession(writable('Unsaved document'), 'myapp-new-document-title')
+    const currentDocumentContent = persistBrowserSession(writable('Lorem ipsum'), 'myapp-new-document-content')
     
     const save = () => {
         // myApi.save({title: $currentDocumentTitle, content: $currentDocumentContent})
@@ -65,10 +69,10 @@
 
 ```html
 <script>
-    import { persist, indexedDBStorage } from "@macfja/svelte-persistent-store"
+    import { persist, createIndexedDBStorage } from "@macfja/svelte-persistent-store"
     import { writable } from "svelte/store"
 
-    const layout = persist(writable('2column'), indexedDBStorage(), 'myapp-layout')
+    const layout = persist(writable('2column'), createIndexedDBStorage(), 'myapp-layout')
 </script>
 
 <aside>

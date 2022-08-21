@@ -11,14 +11,25 @@ npm install @macfja/svelte-persistent-store
 ## Usage
 
 ```javascript
-import { persist, localStorage } from "@macfja/svelte-persistent-store"
+import { persist, createLocalStorage } from "@macfja/svelte-persistent-store"
 import { writable } from "svelte/store"
 
-let name = persist(writable('John'), localStorage(), 'name')
+let name = persist(writable('John'), createLocalStorage(), 'name')
 
 $name = 'Jeanne Doe'
 
 // if you reload the page the value of $name is 'Jeanne Doe'
+```
+
+```javascript
+import { persistBrowserSession } from "@macfja/svelte-persistent-store"
+import { writable } from "svelte/store"
+
+let name = persistBrowserSession(writable('Unsaved'), 'document-name')
+
+$title = 'My Document'
+
+// if you reload the page the value of $title is 'My Document'
 ```
 
 ## Features
@@ -29,12 +40,13 @@ $name = 'Jeanne Doe'
 
 ## Storages
 
-There are 4 storages built-in:
+There are 5 storages built-in:
 
- - `localStorage()`, that use `window.localStorage` to save values 
- - `sessionStorage()`, that use `window.sessionStorage` to save values 
- - `cookieStorage()`, that use `document.cookie` to save values 
- - `indexedDBStorage()`, that use `window.indexedDB` to save values
+ - `createLocalStorage()`, that use `window.localStorage` to save values 
+ - `createSessionStorage()`, that use `window.sessionStorage` to save values 
+ - `createCookieStorage()`, that use `document.cookie` to save values 
+ - `createIndexedDBStorage()`, that use `window.indexedDB` to save values
+ - `createEncryptedStorage()`, that wrap a storage to encrypt data (and key)
 
 You can add more storages, you just need to implement the interface `StorageInterface`
 
@@ -43,6 +55,19 @@ You can add more storages, you just need to implement the interface `StorageInte
 Documentation and examples can be generated with `npm run doc`, next open `docs/index.html` with your favorite web browser.
 
 (Hint: If you don't want to generate the docs, a part of the example and documentation are available [here](.docs/README.md))
+
+### Types
+
+The persist function will return a new Store with type `PersistentStore<T>`.
+
+The full signature of `persist` is:
+```typescript
+declare function persist<T>(store: Writable<T>, storage: StorageInterface<T>, key: string): PersistentStore<T>
+```
+
+The persist function add a `delete` function on the store.
+
+More information about types can be found in the generated `types/index.d.ts` (`npm run prebuild`) or in the generated documentation (`npm run doc`).
 
 ## Contributing
 

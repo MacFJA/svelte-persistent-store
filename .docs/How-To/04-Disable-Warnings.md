@@ -1,3 +1,7 @@
+---
+name: Disabling warning about missing storage
+order: 4
+---
 # Disabling warning about missing storage
 
 When using the library both on Client and Server side, you can have warnings messages about missing storage on the server.

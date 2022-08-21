@@ -1,72 +1,77 @@
+import { serialize, deserialize, addGlobalAllowedClass } from "@macfja/serializer"
 import { get as getCookie, set as setCookie, erase as removeCookie } from "browser-cookies"
-import ESSerializer from "esserializer"
+import Cyrup from "cyrup"
 import { get, set, createStore, del } from "idb-keyval"
 import type { Writable } from "svelte/store"
 
 /**
+ * The behavior when no encryption library is available when requesting an encrypted storage
+ */
+export enum NO_ENCRYPTION_BEHAVIOR {
+    /**
+     * Throw an exception
+     */
+    EXCEPTION = 0,
+    /**
+     * Use the wrapped Storage as-is
+     */
+    NO_ENCRYPTION = 1,
+    /**
+     * Don't use any storage, so no not encrypted data will be persisted
+     */
+    NO_STORAGE = 2
+}
+/**
  * Disabled warnings about missing/unavailable storages
  */
 export function disableWarnings(): void { noWarnings = true }
+
+/**
+ * Set the behavior when no encryption library is available when requesting an encrypted storage
+ * @param behavior
+ */
+export function noEncryptionBehavior(behavior: NO_ENCRYPTION_BEHAVIOR): void { noEncryptionMode = behavior }
 /**
  * If set to true, no warning will be emitted if the requested Storage is not found.
  * This option can be useful when the lib is used on a server.
  */
 let noWarnings = false
 /**
+ * The chosen behavior when no encryption library is available
+ */
+let noEncryptionMode = NO_ENCRYPTION_BEHAVIOR.EXCEPTION
+/**
  * List of storages where the warning have already been displayed.
  */
 const alreadyWarnFor:Array<string> = []
 
+const warnUser = (message) => {
+    const isProduction = (typeof process !== "undefined" && process.env?.NODE_ENV === "production")
+
+    if (!noWarnings && alreadyWarnFor.indexOf(message) === -1 && !isProduction) {
+        if (typeof window === "undefined") {
+            message += "\n" + "Are you running on a server? Most of storages are not available while running on a server."
+        }
+        console.warn(message)
+        alreadyWarnFor.push(message)
+    }
+}
 /**
  * Add a log to indicate that the requested Storage have not been found.
  * @param {string} storageName
  */
 const warnStorageNotFound = (storageName) => {
-    const isProduction = (typeof process !== "undefined" && process.env?.NODE_ENV === "production")
-
-    if (!noWarnings && alreadyWarnFor.indexOf(storageName) === -1 && !isProduction) {
-        let message = `Unable to find the ${storageName}. No data will be persisted.`
-        if (typeof window === "undefined") {
-            message += "\n" + "Are you running on a server? Most of storages are not available while running on a server."
-        }
-        console.warn(message)
-        alreadyWarnFor.push(storageName)
-    }
+    warnUser(`Unable to find the ${storageName}. No data will be persisted.`)
 }
 
-const allowedClasses = []
 /**
  * Add a class to the allowed list of classes to be serialized
  * @param classDef The class to add to the list
  */
-export const addSerializableClass = (classDef: () => unknown): void => { allowedClasses.push(classDef) }
-
-const serialize = (value: unknown): string => ESSerializer.serialize(value)
-const deserialize = (value: string): unknown => {
-    // @TODO: to remove in the next major
-    if (value === "undefined") {
-        return undefined
-    }
-
-    if (value !== null && value !== undefined) {
-        try {
-            return ESSerializer.deserialize(value, allowedClasses)
-        } catch (e) {
-            // Do nothing
-            // use the value "as is"
-        }
-        try {
-            return JSON.parse(value)
-        } catch (e) {
-            // Do nothing
-            // use the value "as is"
-        }
-    }
-    return value
-}
+export const addSerializableClass = (classDef: FunctionConstructor): void => { addGlobalAllowedClass(classDef) }
 
 /**
- * A store that keep it's value in time.
+ * A store that keep its value in time.
  */
 export interface PersistentStore<T> extends Writable<T> {
     /**
@@ -82,7 +87,7 @@ export interface StorageInterface<T> {
     /**
      * Get a value from the storage.
      *
-     * If the value doesn't exists in the storage, `null` should be returned.
+     * If the value doesn't exist in the storage, `null` should be returned.
      * This method MUST be synchronous.
      * @param key The key/name of the value to retrieve
      */
@@ -148,6 +153,34 @@ export function persist<T>(store: Writable<T>, storage: StorageInterface<T>, key
     }
 }
 
+const sharedCookieStorage = createCookieStorage(),
+    sharedLocalStorage:StorageInterface<any> = createLocalStorage(),
+    sharedSessionStorage:StorageInterface<any> = createSessionStorage()
+/**
+ * Persist a store into a cookie
+ * @param {Writable<*>} store The store to enhance
+ * @param {string} cookieName The name of the cookie
+ */
+export function persistCookie<T>(store: Writable<T>, cookieName: string): PersistentStore<T> {
+    return persist(store, sharedCookieStorage, cookieName)
+}
+/**
+ * Persist a store into the browser session storage
+ * @param {Writable<*>} store The store to enhance
+ * @param {string} key The name of the key in the browser session storage
+ */
+export function persistBrowserSession<T>(store: Writable<T>, key: string): PersistentStore<T> {
+    return persist(store, sharedSessionStorage, key)
+}
+/**
+ * Persist a store into the browser local storage
+ * @param {Writable<*>} store The store to enhance
+ * @param {string} key The name of the key in the browser local storage
+ */
+export function persistBrowserLocal<T>(store: Writable<T>, key: string): PersistentStore<T> {
+    return persist(store, sharedLocalStorage, key)
+}
+
 function getBrowserStorage(browserStorage: Storage, listenExternalChanges = false): SelfUpdateStorageInterface<any> {
     const listeners: Array<{key: string, listener: (newValue: any) => void}> = []
     const listenerFunction = (event: StorageEvent) => {
@@ -202,35 +235,35 @@ function getBrowserStorage(browserStorage: Storage, listenExternalChanges = fals
 
 /**
  * Storage implementation that use the browser local storage
- * @param {boolean} listenExternalChanges - Update the store if the localStorage is updated from another page
+ * @param {boolean} listenExternalChanges Update the store if the localStorage is updated from another page
  */
-export function localStorage<T>(listenExternalChanges = false): StorageInterface<T> {
+export function createLocalStorage<T>(listenExternalChanges = false): StorageInterface<T> {
     if (typeof window !== "undefined" && window?.localStorage) {
         return getBrowserStorage(window.localStorage, listenExternalChanges)
     }
     warnStorageNotFound("window.localStorage")
-    return noopStorage()
+    return createNoopStorage()
 }
 
 /**
  * Storage implementation that use the browser session storage
- * @param {boolean} listenExternalChanges - Update the store if the sessionStorage is updated from another page
+ * @param {boolean} listenExternalChanges Update the store if the sessionStorage is updated from another page
  */
-export function sessionStorage<T>(listenExternalChanges = false): StorageInterface<T> {
+export function createSessionStorage<T>(listenExternalChanges = false): StorageInterface<T> {
     if (typeof window !== "undefined" && window?.sessionStorage) {
         return getBrowserStorage(window.sessionStorage, listenExternalChanges)
     }
     warnStorageNotFound("window.sessionStorage")
-    return noopStorage()
+    return createNoopStorage()
 }
 
 /**
  * Storage implementation that use the browser cookies
  */
-export function cookieStorage(): StorageInterface<any> {
+export function createCookieStorage(): StorageInterface<any> {
     if (typeof document === "undefined" || typeof document?.cookie !== "string") {
         warnStorageNotFound("document.cookies")
-        return noopStorage()
+        return createNoopStorage()
     }
 
     return {
@@ -253,10 +286,10 @@ export function cookieStorage(): StorageInterface<any> {
 /**
  * Storage implementation that use the browser IndexedDB
  */
-export function indexedDBStorage<T>(): SelfUpdateStorageInterface<T> {
+export function createIndexedDBStorage<T>(): SelfUpdateStorageInterface<T> {
     if (typeof indexedDB !== "object" || typeof window === "undefined" || typeof window?.indexedDB !== "object") {
         warnStorageNotFound("IndexedDB")
-        return noopSelfUpdateStorage()
+        return createNoopSelfUpdateStorage()
     }
 
     const database = createStore("svelte-persist", "persist")
@@ -293,9 +326,67 @@ export function indexedDBStorage<T>(): SelfUpdateStorageInterface<T> {
 }
 
 /**
+ * Add encryption layer on a storage
+ * @param wrapped The storage to enhance
+ * @param encryptionKey The encryption key to use on key and data
+ */
+export function createEncryptedStorage<T>(wrapped: StorageInterface<T>, encryptionKey: string): StorageInterface<T>|SelfUpdateStorageInterface<T> {
+    if (typeof window === "undefined" || typeof window?.crypto !== "object" || typeof window?.crypto?.subtle !== "object") {
+        switch (noEncryptionMode) {
+        case NO_ENCRYPTION_BEHAVIOR.NO_STORAGE:
+            warnUser("Unable to find the encryption library. No data will be persisted.")
+            return createNoopStorage()
+        case NO_ENCRYPTION_BEHAVIOR.NO_ENCRYPTION:
+            warnUser("Unable to find the encryption library. Data will not be encrypted.")
+            return wrapped
+        case NO_ENCRYPTION_BEHAVIOR.EXCEPTION:
+        default:
+            throw new Error("Unable to find the encryption library.")
+        }
+
+    }
+    const listeners: Array<{key: string, listener: (newValue: T) => void}> = []
+    const listenerFunction = (eventKey: string, newValue: T) => {
+        if (newValue === undefined) {
+            return
+        }
+        listeners
+            .filter(({key}) => key === eventKey)
+            .forEach(({listener}) => listener(newValue))
+    }
+    return {
+        addListener(key: string, listener: (newValue: any) => void) {
+            listeners.push({key, listener})
+        },
+        removeListener(key: string, listener: (newValue: any) => void) {
+            const index = listeners.indexOf({key, listener})
+            if (index !== -1) {
+                listeners.splice(index, 1)
+            }
+        },
+        getValue(key: string): T | null {
+            Cyrup.encrypt(key, encryptionKey, null, "sps").then(encryptedKey => {
+                const storageValue = wrapped.getValue(encryptedKey)
+                if (storageValue === null) return undefined
+                return Cyrup.decrypt(storageValue, encryptionKey)
+            }).then(decryptedData => listenerFunction(key, (deserialize(decryptedData) as T)))
+            return null
+        },
+        setValue(key: string, value: T): void {
+            Cyrup.encrypt(key, encryptionKey, null, "sps").then(encryptedKey => {
+                Cyrup.encrypt(serialize(value), encryptionKey, null, "sps").then(encryptedData => wrapped.setValue(encryptedKey, encryptedData))
+            })
+        },
+        deleteValue(key: string): void {
+            Cyrup.encrypt(key, encryptionKey, null, "sps").then(encryptedKey => wrapped.deleteValue(encryptedKey))
+        }
+    }
+}
+
+/**
  * Storage implementation that do nothing
  */
-export function noopStorage(): StorageInterface<any> {
+export function createNoopStorage(): StorageInterface<any> {
     return {
         getValue(): null {
             return null
@@ -309,7 +400,7 @@ export function noopStorage(): StorageInterface<any> {
     }
 }
 
-function noopSelfUpdateStorage(): SelfUpdateStorageInterface<any> {
+function createNoopSelfUpdateStorage(): SelfUpdateStorageInterface<any> {
     return {
         addListener() {
             // Do nothing
