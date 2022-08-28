@@ -36,7 +36,6 @@ test("Initial state", async t => {
     await t
         .click(clearButton)
         .click(reloadButton)
-        .wait(10)
         .expect(cookieInput.value).eql("John")
         .expect(localInput.value).eql("Foo")
         .expect(sessionInput.value).eql("Bar")

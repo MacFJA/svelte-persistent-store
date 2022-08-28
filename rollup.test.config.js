@@ -16,12 +16,11 @@ export default {
         sucrase({
             exclude: ["dist/*"],
             include: ["src/*"],
-            transforms: ["typescript"],
-            disableESTransforms: true
+            transforms: ["typescript"]
         }),
         commonjs({ignore: ["crypto", "util"]}),
         resolve({
-            extensions: [".mjs", ".js", ".json", ".node", ".ts"]
+            extensions: [".mjs", ".js", ".json", ".node", ".ts", ".cjs"]
         })
     ]
 }

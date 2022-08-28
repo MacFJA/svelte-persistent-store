@@ -1,9 +1,9 @@
 <script>
     import {
         persist,
-        createCookieStorage,
-        createLocalStorage,
-        createSessionStorage,
+        persistCookie,
+        persistBrowserSession,
+        persistBrowserLocal,
         createIndexedDBStorage,
         addSerializableClass,
     } from "../../src/index"
@@ -24,19 +24,19 @@
 
     addSerializableClass(NameHolder)
 
-    let cookieExample = persist(writable('John'), createCookieStorage(), 'sps-userName')
-    let localExample = persist(writable('Foo'), createLocalStorage(), 'sps-action')
-    let sessionExample = persist(writable('Bar'), createSessionStorage(), 'sps-call')
+    let cookieExample = persistCookie(writable('John'), 'sps-userName')
+    let localExample = persistBrowserLocal(writable('Foo'), 'sps-action')
+    let sessionExample = persistBrowserSession(writable('Bar'), 'sps-call')
     let indexedDBExample = persist(writable('Hello'), createIndexedDBStorage(), 'sps-data')
-    let undefinedExample = persist(writable(), createSessionStorage(), 'sps-undefined')
+    let undefinedExample = persistBrowserSession(writable(), 'sps-undefined')
     let undefinedExample2 = persist(writable(), createIndexedDBStorage(), 'sps-undefined')
-    let undefinedExample3 = persist(writable(), createCookieStorage(), 'sps-undefined')
-    let nullExample = persist(writable(null), createSessionStorage(), 'sps-null')
+    let undefinedExample3 = persistCookie(writable(), 'sps-undefined')
+    let nullExample = persistBrowserSession(writable(null), 'sps-null')
     let nullExample2 = persist(writable(null), createIndexedDBStorage(), 'sps-null')
-    let nullExample3 = persist(writable(null), createCookieStorage(), 'sps-null')
-    let classExample = persist(writable(new NameHolder()), createLocalStorage(), 'sps-class')
-    let arrayExample = persist(writable([1,2,3]), createLocalStorage(), 'sps-array')
-    let objectExample = persist(writable({a: 1, b: 2}), createLocalStorage(), 'sps-object')
+    let nullExample3 = persistCookie(writable(null), 'sps-null')
+    let classExample = persistBrowserLocal(writable(new NameHolder()), 'sps-class')
+    let arrayExample = persistBrowserLocal(writable([1,2,3]), 'sps-array')
+    let objectExample = persistBrowserLocal(writable({a: 1, b: 2}), 'sps-object')
 
     let cookie = ''
 

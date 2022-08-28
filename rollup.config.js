@@ -10,12 +10,9 @@ const name = pkg.name
     .replace(/^\w/, m => m.toUpperCase())
     .replace(/-\w/g, m => m[1].toUpperCase())
 
-export default {
+const config = (es) => ({
     input: "src/index.ts",
-    output: [
-        { file: pkg.module, "format": "es" },
-        { file: pkg.main, "format": "umd", name }
-    ],
+    output: { file: es ? pkg.module : pkg.main, "format": es ? "es" : "umd", name },
     plugins: [
         sucrase({
             exclude: ["dist/*"],
@@ -23,11 +20,16 @@ export default {
             transforms: ["typescript"]
         }),
         commonjs({
-            ignore: ["crypto", "util"]
+            ignore: es ? [] : ["crypto", "util"]
         }),
         resolve({
             extensions: [".mjs", ".js", ".json", ".node", ".ts"]
         }),
         terser()
     ]
-}
+})
+
+export default [
+    config(true),
+    config(false)
+]

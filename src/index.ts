@@ -331,7 +331,12 @@ export function createIndexedDBStorage<T>(): SelfUpdateStorageInterface<T> {
  * @param encryptionKey The encryption key to use on key and data
  */
 export function createEncryptedStorage<T>(wrapped: StorageInterface<T>, encryptionKey: string): StorageInterface<T>|SelfUpdateStorageInterface<T> {
-    if (typeof window === "undefined" || typeof window?.crypto !== "object" || typeof window?.crypto?.subtle !== "object") {
+    try {
+        if (typeof window !== "undefined" && (typeof window?.crypto !== "object" || typeof window?.crypto?.subtle !== "object")) {
+            throw new Error("Error with Browser WebCrypto lib")
+        }
+        Cyrup.randomBytes(2)
+    } catch (e) {
         switch (noEncryptionMode) {
         case NO_ENCRYPTION_BEHAVIOR.NO_STORAGE:
             warnUser("Unable to find the encryption library. No data will be persisted.")
@@ -343,7 +348,6 @@ export function createEncryptedStorage<T>(wrapped: StorageInterface<T>, encrypti
         default:
             throw new Error("Unable to find the encryption library.")
         }
-
     }
     const listeners: Array<{key: string, listener: (newValue: T) => void}> = []
     const listenerFunction = (eventKey: string, newValue: T) => {

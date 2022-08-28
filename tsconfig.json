@@ -4,9 +4,6 @@
   "include": ["src/*"],
   "exclude": ["docs/*", "dist/*"],
   "compilerOptions": {
-    "paths": {
-      "class-hydrator": ["./node_modules/class-hydrator/src/index.ts"]
-    },
     "emitDeclarationOnly": true,
     "declaration": true,
     "declarationDir": "types",
