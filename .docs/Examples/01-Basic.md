@@ -87,3 +87,25 @@ order: 1
     </label>
 </aside>
 ```
+
+## Chrome storage
+
+```html
+<script>
+    import { persist, createChromeStorage, CHROME_STORAGE_TYPE } from "@macfja/svelte-persistent-store"
+    import { writable } from "svelte/store"
+
+    const mode = persist(writable('2column'), createChromeStorage(CHROME_STORAGE_TYPE.SYNC), 'myext-mode')
+</script>
+
+<aside>
+    <label>
+        <span>Select the extension mode:</span>
+        <select bind:value={$mode}>
+            <option value="off">Off</option>
+            <option value="normal">Normal</option>
+            <option value="debug">Debug (verbose)</option>
+        </select>
+    </label>
+</aside>
+```
