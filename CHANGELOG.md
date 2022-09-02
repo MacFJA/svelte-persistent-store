@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New storage `createChromeStorage` for Chrome Extension
 - Possibility to change the serialization functions ([Issue#26])
 - Add note in README about BC break ([Issue#26])
+- (dev) More quality tools
 
 ### Fixed
 
@@ -23,6 +24,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgrade the version of `@macfja/serializer` ([Issue#26])
 - (dev) Use shorthand persist function in test
 - (dev) Refactoring of the listeners' creation/usage functions
+- (dev) Run prettier on existing code
+
+### Removed
+
+- (dev) Remove unused file
 
 ## [2.0.0]
 

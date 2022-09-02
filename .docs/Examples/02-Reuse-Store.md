@@ -2,6 +2,7 @@
 name: Reuse a store across an application
 order: 2
 ---
+
 # Reuse a store across an application
 
 There are, at least, 3 ways to have the same store between components.
@@ -18,7 +19,7 @@ The 2nd and 3rd are similar. The difference between the two is the "owning" of t
 If you declare it in the `context="module"` of a component you implicitly make this component as owner (for human point of view) as every times you need it you will import it from this component.
 Creating the component in a separate JS/TS file, the store is not _"attached"_ to any component.
 
-----
+---
 
 Here an example of those 3 implementations
 
@@ -27,25 +28,29 @@ Here an example of those 3 implementations
 ```html
 <!-- Component1.svelte -->
 <script>
-  import { persist, createLocalStorage } from "@macfja/svelte-persistent-store"
-  import { writable } from "svelte/store"
+    import { persist, createLocalStorage } from "@macfja/svelte-persistent-store"
+    import { writable } from "svelte/store"
 
-  let name = persist(writable("John"), createLocalStorage(), "name")
+    let name = persist(writable("John"), createLocalStorage(), "name")
 
-  $name = 'Jeanne Doe'
+    $name = "Jeanne Doe"
 </script>
 ```
+
 &nbsp;
+
 ```html
 <!-- Component2.svelte -->
 <script>
-  import { persist, createLocalStorage } from "@macfja/svelte-persistent-store"
-  import { writable } from "svelte/store"
-  import { onMount } from "svelte"
+    import { persist, createLocalStorage } from "@macfja/svelte-persistent-store"
+    import { writable } from "svelte/store"
+    import { onMount } from "svelte"
 
-  let name = persist(writable("Foobar"), createLocalStorage(), "name")
+    let name = persist(writable("Foobar"), createLocalStorage(), "name")
 
-  onMount(() => { alert($name) }) // If Component2 is loaded/mount after Component1 the alert will be "Jeanne Doe"
+    onMount(() => {
+        alert($name)
+    }) // If Component2 is loaded/mount after Component1 the alert will be "Jeanne Doe"
 </script>
 ```
 
@@ -54,22 +59,24 @@ Here an example of those 3 implementations
 ```html
 <!-- Component1.svelte -->
 <script context="module">
-  import { persist, createLocalStorage } from "@macfja/svelte-persistent-store"
-  import { writable } from "svelte/store"
+    import { persist, createLocalStorage } from "@macfja/svelte-persistent-store"
+    import { writable } from "svelte/store"
 
-  export let name = persist(writable("John"), createLocalStorage(), "name")
+    export let name = persist(writable("John"), createLocalStorage(), "name")
 </script>
 <script>
-  $name = "Jeanne Doe"
+    $name = "Jeanne Doe"
 </script>
 ```
+
 &nbsp;
+
 ```html
 <!-- Component2.svelte -->
 <script>
-  import { name } from "Component1.svelte"
+    import { name } from "Component1.svelte"
 
-  name.subscribe(value => alert(value)) // the alert will open when the store is change in any component
+    name.subscribe((value) => alert(value)) // the alert will open when the store is change in any component
 </script>
 ```
 
@@ -82,21 +89,25 @@ import { writable } from "svelte/store"
 
 export let name = persist(writable("John"), createLocalStorage(), "name")
 ```
+
 &nbsp;
+
 ```html
 <!-- Component1.svelte -->
 <script>
-  import { name } from "stores.js"
+    import { name } from "stores.js"
 
-  $name = "Jeanne Doe"
+    $name = "Jeanne Doe"
 </script>
 ```
+
 &nbsp;
+
 ```html
 <!-- Component2.svelte -->
 <script>
-  import { name } from "stores.js"
+    import { name } from "stores.js"
 
-  name.subscribe(value => alert(value)) // the alert will open when the store is change in any component
+    name.subscribe((value) => alert(value)) // the alert will open when the store is change in any component
 </script>
 ```

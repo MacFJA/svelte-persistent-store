@@ -2,6 +2,7 @@
 name: Persist a JavaScript class
 order: 3
 ---
+
 # Persist a JavaScript class
 
 The storage of classes is a bit more involving that simple object or array.
@@ -31,19 +32,19 @@ To store classes we need to serialize them into a special form that we will be a
     }
 
     // Register the class
-    addSerializableClass(NameHolder);
+    addSerializableClass(NameHolder)
 
-    let classStore = persist(writable(new NameHolder()), createLocalStorage(), 'user-name');
-    
+    let classStore = persist(writable(new NameHolder()), createLocalStorage(), "user-name")
+
     function updateName() {
-        $classStore.setName('Jeanne');
+        $classStore.setName("Jeanne")
         /* Force reactivity as we are working with object/class,
          * As there is no assignation, Svelte can't detect reactivity, so we help it by creating an assignation
          */
-        $classStore = $classStore;
+        $classStore = $classStore
     }
 </script>
 
 The current name is: <var id="classValue">{$classStore.getName()}</var>
-<button id="classButton" on:click={updateName}>Change name to Jeanne</button>
+<button id="classButton" on:click="{updateName}">Change name to Jeanne</button>
 ```

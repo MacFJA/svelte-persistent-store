@@ -1,0 +1,9 @@
+/CHANGELOG.md
+/CONTRIBUTING.md
+/LICENSE.md
+/dist
+/docs
+/node_modules
+/types
+/package-lock.json
+/tests/build
