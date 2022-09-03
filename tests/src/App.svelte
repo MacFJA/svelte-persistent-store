@@ -6,8 +6,10 @@
         persistBrowserLocal,
         createIndexedDBStorage,
         addSerializableClass,
+        setSerialization
     } from "../../src/index"
     import { writable } from "svelte/store"
+    import {serialize, deserialize, addGlobalAllowedClass} from "@macfja/serializer"
 
     export class NameHolder {
         constructor() {
@@ -37,12 +39,25 @@
     let classExample = persistBrowserLocal(writable(new NameHolder()), 'sps-class')
     let arrayExample = persistBrowserLocal(writable([1,2,3]), 'sps-array')
     let objectExample = persistBrowserLocal(writable({a: 1, b: 2}), 'sps-object')
+    let storageExample = persistBrowserSession(writable({foo: "bar", baz: {"hello": "world", "foobar": [1,2,3]}}), 'sps-serialization')
 
     let cookie = ''
+    let storageRawValue = ''
 
     cookieExample.subscribe(_ => {
         cookie = document.cookie
     })
+    storageExample.subscribe(_ => {
+        storageRawValue = window.sessionStorage.getItem('sps-serialization')
+    })
+    const setAppSerialization = (toJSON) => {
+        if (toJSON) {
+            setSerialization(JSON.stringify, JSON.parse)
+        } else {
+            setSerialization(serialize, deserialize, addGlobalAllowedClass)
+        }
+        $storageExample = $storageExample
+    }
 </script>
 
 <fieldset>
@@ -121,6 +136,15 @@
     The current object type is: <var id="className">{$classExample.constructor.name}</var>.
     <button id="classButton" on:click={() => { $classExample.setName('Jeanne'); $classExample = $classExample}}>Change name to Jeanne</button>
 </fieldset>
+
+<fieldset>
+    <legend>Storage raw data</legend>
+    Data in store: <var id="storageValue">{JSON.stringify($storageExample)}</var>.<br />
+    Raw data in storage: <var id="storageRawValue">{storageRawValue}</var>.<br />
+    <button id="storageJSONButton" on:click={() => setAppSerialization(true)}>Set to JSON</button>
+    <button id="storageSerializerButton" on:click={() => setAppSerialization(false)}>Set to @macfja/serializer</button>
+</fieldset>
+
 
 <button id="reloadButton" on:click={() => window.location.reload()}>Reload the page</button>
 

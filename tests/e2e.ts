@@ -29,11 +29,16 @@ const cookieInput = Selector("#cookieInput"),
     classValue = Selector("#classValue"),
     className = Selector("#className"),
     classButton = Selector("#classButton"),
+    storageValue = Selector("#storageValue"),
+    storageRawValue = Selector("#storageRawValue"),
+    storageJSONButton = Selector("#storageJSONButton"),
+    storageSerializerButton = Selector("#storageSerializerButton"),
     reloadButton = Selector("#reloadButton"),
     clearButton = Selector("#clearButton")
 
 test("Initial state", async t => {
     await t
+        .click(storageSerializerButton)
         .click(clearButton)
         .click(reloadButton)
         .expect(cookieInput.value).eql("John")
@@ -59,6 +64,8 @@ test("Initial state", async t => {
         .expect(nullType3.textContent).eql("object")
         .expect(classValue.textContent).eql("John")
         .expect(className.textContent).eql("NameHolder")
+        .expect(storageValue.textContent).eql("{\"foo\":\"bar\",\"baz\":{\"hello\":\"world\",\"foobar\":[1,2,3]}}")
+        .expect(storageRawValue.textContent).eql("{\"foo\":\"bar\",\"baz\":{\"hello\":\"world\",\"foobar\":[\"#$@__reference__2\",1,2,3],\"#$@__reference__\":1},\"#$@__reference__\":0}")
 })
 
 test("Cookie storage", async t => {
@@ -172,4 +179,16 @@ test("Class transform", async t => {
         .click(reloadButton)
         .expect(classValue.textContent).eql("John")
         .expect(className.textContent).eql("NameHolder")
+})
+
+test("Serialization functions", async t => {
+    await t
+        .expect(storageValue.textContent).eql("{\"foo\":\"bar\",\"baz\":{\"hello\":\"world\",\"foobar\":[1,2,3]}}")
+        .expect(storageRawValue.textContent).eql("{\"foo\":\"bar\",\"baz\":{\"hello\":\"world\",\"foobar\":[\"#$@__reference__2\",1,2,3],\"#$@__reference__\":1},\"#$@__reference__\":0}")
+        .click(storageJSONButton)
+        .expect(storageValue.textContent).eql("{\"foo\":\"bar\",\"baz\":{\"hello\":\"world\",\"foobar\":[1,2,3]}}")
+        .expect(storageRawValue.textContent).eql("{\"foo\":\"bar\",\"baz\":{\"hello\":\"world\",\"foobar\":[1,2,3]}}")
+        .click(storageSerializerButton)
+        .expect(storageValue.textContent).eql("{\"foo\":\"bar\",\"baz\":{\"hello\":\"world\",\"foobar\":[1,2,3]}}")
+        .expect(storageRawValue.textContent).eql("{\"foo\":\"bar\",\"baz\":{\"hello\":\"world\",\"foobar\":[\"#$@__reference__2\",1,2,3],\"#$@__reference__\":1},\"#$@__reference__\":0}")
 })

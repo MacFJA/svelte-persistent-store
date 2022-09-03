@@ -70,6 +70,14 @@ The persist function add a `delete` function on the store.
 
 More information about types can be found in the generated `types/index.d.ts` (`npm run prebuild`) or in the generated documentation (`npm run doc`).
 
+## Backwards Compatibility Break
+
+### `1.3.0` to `2.0.0`
+Data persisted in version `1.3.0` may not be deserializable with version `2.*`.
+
+If you have persisted store that contains Javascript class with version `1.3.0` of `@macfja/svelte-persistent-store` you will not be able to get the data by default.
+This is due to a change of data serialization. More information [here](.docs/How-To/06-Change-Serialization.md)
+
 ## Contributing
 
 Contributions are welcome. Please open up an issue or create PR if you would like to help out.
