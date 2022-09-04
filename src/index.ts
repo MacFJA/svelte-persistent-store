@@ -1,4 +1,8 @@
-import { serialize, deserialize, addGlobalAllowedClass } from "@macfja/serializer"
+import {
+    serialize as defaultSerializer,
+    deserialize as defaultDeserializer,
+    addGlobalAllowedClass,
+} from "@macfja/serializer"
 import { get as getCookie, set as setCookie, erase as removeCookie } from "browser-cookies"
 import Cyrup from "cyrup"
 import { get, set, createStore, del } from "idb-keyval"
@@ -68,7 +72,45 @@ const warnStorageNotFound = (storageName) => {
  * Add a class to the allowed list of classes to be serialized
  * @param classDef The class to add to the list
  */
-export const addSerializableClass = (classDef: FunctionConstructor): void => { addGlobalAllowedClass(classDef) }
+export const addSerializableClass = (classDef: FunctionConstructor): void => {
+    addSerializable(classDef)
+}
+
+/**
+ * The function that will be used to serialize data
+ * @type {(data: any) => string}
+ */
+let serialize = defaultSerializer
+/**
+ * The function that will be used to deserialize data
+ * @type {(input: string) => any}
+ */
+let deserialize = defaultDeserializer
+/**
+ * The function used to add a class in the serializer allowed class
+ * @type {(classConstructor: FunctionConstructor) => void}
+ */
+let addSerializable = addGlobalAllowedClass
+
+/**
+ * Set the serialization functions to use
+ * @param {(data: any) => string} serializer The function to use to transform any data into a string
+ * @param {(input: string) => any} deserializer The function to use to transform back string into the original data (reverse of the serializer)
+ * @param {(classConstructor: FunctionConstructor) => void} [addSerializableClass] The function to use to add a class in the serializer/deserializer allowed class
+ */
+export function setSerialization(
+    serializer: (data: any) => string,
+    deserializer: (input: string) => any,
+    addSerializableClass?: (classConstructor: FunctionConstructor) => void
+): void {
+    serialize = serializer
+    deserialize = deserializer
+    addSerializable =
+        addSerializableClass ??
+        (() => {
+            return
+        })
+}
 
 /**
  * A store that keep its value in time.

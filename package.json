@@ -19,7 +19,7 @@
     "README.md"
   ],
   "dependencies": {
-    "@macfja/serializer": "^1.0.2",
+    "@macfja/serializer": "^1.1.1",
     "browser-cookies": "^1.2.0",
     "cyrup": "^0.8.1",
     "idb-keyval": "^5.1.3"

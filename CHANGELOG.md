@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - New storage `createChromeStorage` for Chrome Extension
+- Possibility to change the serialization functions ([Issue#26])
+- Add note in README about BC break ([Issue#26])
 
 ### Fixed
 
@@ -18,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Upgrade the version of `@macfja/serializer` ([Issue#26])
 - (dev) Use shorthand persist function in test
 - (dev) Refactoring of the listeners' creation/usage functions
 
@@ -124,4 +127,5 @@ First version
 [Issue#20]: https://github.com/MacFJA/svelte-persistent-store/issues/20
 [Issue#21]: https://github.com/MacFJA/svelte-persistent-store/issues/21
 [Issue#23]: https://github.com/MacFJA/svelte-persistent-store/issues/23
+[Issue#26]: https://github.com/MacFJA/svelte-persistent-store/issues/26
 [PR#8]: https://github.com/MacFJA/svelte-persistent-store/pull/8
