@@ -55,8 +55,8 @@
     },
     "scripts": {
         "doc": "ts-docs src/index.ts",
-        "lint": "prettier --check ./**/*.{md,js,json,ts} && eslint src/ ./*.js",
-        "format": "prettier --write ./**/*.{md,js,json,ts}",
+        "lint": "prettier --check ./**/*.{md,js,json,ts,yml} && eslint src/ ./*.js",
+        "format": "prettier --write ./**/*.{md,js,json,ts,yml}",
         "pretest": "rollup -c rollup.test.config.js",
         "test": "testcafe all tests/e2e.ts --app 'npx sirv tests --port 5000'",
         "prebuild": "tsc",
@@ -82,6 +82,7 @@
         "indexedDB",
         "persist",
         "encryptedStorage",
+        "chromeStorage",
         "cookie",
         "svelte",
         "sveltejs"
