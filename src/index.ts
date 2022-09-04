@@ -153,6 +153,45 @@ export function persist<T>(store: Writable<T>, storage: StorageInterface<T>, key
     }
 }
 
+function noop () {
+    return
+}
+
+/**
+ * Create helper function to use asynchronous storage
+ * @param {() => void} onFirst Function to run every time the number of listener goes from 0 to 1
+ * @param {() => void} onEmptied Function to run every tie the number of listener goes from 1 to 0
+ * @return {{callListeners: (eventKey: string, newValue: any) => void, addListener: (key: string, listener: (newValue: any) => void) => void, removeListener: (key: string, listener: (newValue: any) => void) => void}}
+ */
+function createListenerFunctions<T>(onFirst: () => void = noop, onEmptied: () => void = noop): {
+    callListeners: (eventKey: string, newValue: T) => void;
+    addListener: (key: string, listener: (newValue: T) => void) => void;
+    removeListener: (key: string, listener: (newValue: T) => void) => void
+    } {
+    const listeners: Array<{key: string, listener: (newValue: T) => void}> = []
+    return {
+        callListeners (eventKey: string, newValue: T) {
+            if (newValue === undefined) {
+                return
+            }
+            listeners
+                .filter(({key}) => key === eventKey)
+                .forEach(({listener}) => listener(newValue))
+        },
+        addListener (key: string, listener: (newValue: any) => void) {
+            listeners.push({key, listener})
+            if (listeners.length === 1) onFirst()
+        },
+        removeListener (key: string, listener: (newValue: any) => void) {
+            const index = listeners.indexOf({key, listener})
+            if (index !== -1) {
+                listeners.splice(index, 1)
+            }
+            if (listeners.length === 0) onEmptied()
+        }
+    }
+}
+
 const sharedCookieStorage = createCookieStorage(),
     sharedLocalStorage:StorageInterface<any> = createLocalStorage(),
     sharedSessionStorage:StorageInterface<any> = createSessionStorage()
@@ -182,15 +221,10 @@ export function persistBrowserLocal<T>(store: Writable<T>, key: string): Persist
 }
 
 function getBrowserStorage(browserStorage: Storage, listenExternalChanges = false): SelfUpdateStorageInterface<any> {
-    const listeners: Array<{key: string, listener: (newValue: any) => void}> = []
     const listenerFunction = (event: StorageEvent) => {
         const eventKey = event.key
         if (event.storageArea === browserStorage) {
-            listeners
-                .filter(({key}) => key === eventKey)
-                .forEach(({listener}) => {
-                    listener(deserialize(event.newValue))
-                })
+            callListeners(eventKey, deserialize(event.newValue))
         }
     }
     const connect = () => {
@@ -203,23 +237,11 @@ function getBrowserStorage(browserStorage: Storage, listenExternalChanges = fals
             window.removeEventListener("storage", listenerFunction)
         }
     }
+    const { removeListener, callListeners, addListener } = createListenerFunctions<any>(connect, disconnect)
 
     return {
-        addListener(key: string, listener: (newValue: any) => void) {
-            listeners.push({key, listener})
-            if (listeners.length === 1) {
-                connect()
-            }
-        },
-        removeListener(key: string, listener: (newValue: any) => void) {
-            const index = listeners.indexOf({key, listener})
-            if (index !== -1) {
-                listeners.splice(index, 1)
-            }
-            if (listeners.length === 0) {
-                disconnect()
-            }
-        },
+        addListener,
+        removeListener,
         getValue(key: string): any | null {
             const value = browserStorage.getItem(key)
             return deserialize(value)
@@ -292,28 +314,13 @@ export function createIndexedDBStorage<T>(): SelfUpdateStorageInterface<T> {
         return createNoopSelfUpdateStorage()
     }
 
+    const { removeListener, callListeners, addListener } = createListenerFunctions<T>()
     const database = createStore("svelte-persist", "persist")
-    const listeners: Array<{key: string, listener: (newValue: T) => void}> = []
-    const listenerFunction = (eventKey: string, newValue: T) => {
-        if (newValue === undefined) {
-            return
-        }
-        listeners
-            .filter(({key}) => key === eventKey)
-            .forEach(({listener}) => listener(newValue))
-    }
     return {
-        addListener(key: string, listener: (newValue: any) => void) {
-            listeners.push({key, listener})
-        },
-        removeListener(key: string, listener: (newValue: any) => void) {
-            const index = listeners.indexOf({key, listener})
-            if (index !== -1) {
-                listeners.splice(index, 1)
-            }
-        },
+        addListener,
+        removeListener,
         getValue(key: string): T | null {
-            get(key, database).then(value => listenerFunction(key, (deserialize(value) as T)))
+            get(key, database).then(value => callListeners(key, (deserialize(value) as T)))
             return null
         },
         setValue(key: string, value: T): void {
@@ -349,31 +356,17 @@ export function createEncryptedStorage<T>(wrapped: StorageInterface<T>, encrypti
             throw new Error("Unable to find the encryption library.")
         }
     }
-    const listeners: Array<{key: string, listener: (newValue: T) => void}> = []
-    const listenerFunction = (eventKey: string, newValue: T) => {
-        if (newValue === undefined) {
-            return
-        }
-        listeners
-            .filter(({key}) => key === eventKey)
-            .forEach(({listener}) => listener(newValue))
-    }
+
+    const { removeListener, callListeners, addListener } = createListenerFunctions<T>()
     return {
-        addListener(key: string, listener: (newValue: any) => void) {
-            listeners.push({key, listener})
-        },
-        removeListener(key: string, listener: (newValue: any) => void) {
-            const index = listeners.indexOf({key, listener})
-            if (index !== -1) {
-                listeners.splice(index, 1)
-            }
-        },
+        addListener,
+        removeListener,
         getValue(key: string): T | null {
             Cyrup.encrypt(key, encryptionKey, null, "sps").then(encryptedKey => {
                 const storageValue = wrapped.getValue(encryptedKey)
                 if (storageValue === null) return undefined
                 return Cyrup.decrypt(storageValue, encryptionKey)
-            }).then(decryptedData => listenerFunction(key, (deserialize(decryptedData) as T)))
+            }).then(decryptedData => callListeners(key, (deserialize(decryptedData) as T)))
             return null
         },
         setValue(key: string, value: T): void {
@@ -383,6 +376,63 @@ export function createEncryptedStorage<T>(wrapped: StorageInterface<T>, encrypti
         },
         deleteValue(key: string): void {
             Cyrup.encrypt(key, encryptionKey, null, "sps").then(encryptedKey => wrapped.deleteValue(encryptedKey))
+        }
+    }
+}
+
+export enum CHROME_STORAGE_TYPE {
+    LOCAL,
+    SESSION,
+    SYNC
+}
+export function createChromeStorage<T>(storageType: CHROME_STORAGE_TYPE = CHROME_STORAGE_TYPE.LOCAL, listenExternalChanges = false): SelfUpdateStorageInterface<T> {
+    if (typeof chrome !== "object" || typeof chrome.storage !== "object") {
+        warnStorageNotFound("ChromeStorage")
+        return createNoopSelfUpdateStorage()
+    }
+
+    let area = "local"
+    switch (storageType) {
+    case CHROME_STORAGE_TYPE.LOCAL:
+        area = "local"
+        break
+    case CHROME_STORAGE_TYPE.SYNC:
+        area = "sync"
+        break
+    case CHROME_STORAGE_TYPE.SESSION:
+        area = "session"
+        break
+    }
+
+    function externalChangesListener(changes: Record<string, { oldValue: T, newValue: T }>, areaName) {
+        if (areaName !== area) return
+        for (const [key, {newValue}] of Object.entries(changes)) {
+            callListeners(key, newValue)
+        }
+    }
+
+    const { removeListener, callListeners, addListener } = createListenerFunctions<T>(() => {
+        if (listenExternalChanges) {
+            chrome.storage.onChanged.addListener(externalChangesListener)
+        }
+    }, () => {
+        if (listenExternalChanges) {
+            chrome.storage.onChanged.removeListener(externalChangesListener)
+        }
+    })
+
+    return {
+        addListener,
+        removeListener,
+        getValue(key: string): T | null {
+            chrome.storage[area].get([key], result => callListeners(key, result.key))
+            return null
+        },
+        setValue(key: string, value: T): void {
+            chrome.storage[area].set({[key]: value})
+        },
+        deleteValue(key: string): void {
+            chrome.storage[area].remove(key)
         }
     }
 }

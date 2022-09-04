@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- New storage `createChromeStorage` for Chrome Extension
+
 ### Fixed
 
 - Change compilation (remove all `require` in ES build) ([Issue#23])
@@ -15,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - (dev) Use shorthand persist function in test
+- (dev) Refactoring of the listeners' creation/usage functions
 
 ## [2.0.0]
 
