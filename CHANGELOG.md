@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Change compilation (remove all `require` in ES build) ([Issue#23])
+- Better detection of unavailable Crypto capacity
+- (dev) Don't allow Testcafe 1.20.* versions
+
+### Changed
+
+- (dev) Use shorthand persist function in test
+
 ## [2.0.0]
 
 ### Added
@@ -108,4 +118,5 @@ First version
 [Issue#19]: https://github.com/MacFJA/svelte-persistent-store/issues/19
 [Issue#20]: https://github.com/MacFJA/svelte-persistent-store/issues/20
 [Issue#21]: https://github.com/MacFJA/svelte-persistent-store/issues/21
+[Issue#23]: https://github.com/MacFJA/svelte-persistent-store/issues/23
 [PR#8]: https://github.com/MacFJA/svelte-persistent-store/pull/8
