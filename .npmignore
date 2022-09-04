@@ -1,0 +1,11 @@
+/node_modules/
+/tests/
+/docs/
+/.docs/
+/src/
+/*.js
+/*ignore
+/*.json
+!/package.json
+/CHANGELOG.md
+/CONTRIBUTING.md

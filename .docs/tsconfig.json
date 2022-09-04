@@ -1,15 +1,13 @@
 {
-  "extends": "@tsconfig/svelte/tsconfig.json",
+    "extends": "@tsconfig/svelte/tsconfig.json",
 
-  "include": ["src/*"],
-  "exclude": ["docs/*", "dist/*"],
-  "compilerOptions": {
-    "emitDeclarationOnly": true,
-    "declaration": true,
-    "declarationDir": "../types",
-    "sourceMap": false
-  },
-  "files": [
-    "../src/index.ts"
-  ]
+    "include": ["src/*"],
+    "exclude": ["docs/*", "dist/*"],
+    "compilerOptions": {
+        "emitDeclarationOnly": true,
+        "declaration": true,
+        "declarationDir": "../types",
+        "sourceMap": false
+    },
+    "files": ["../src/index.ts"]
 }
