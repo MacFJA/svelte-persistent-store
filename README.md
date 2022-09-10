@@ -40,6 +40,17 @@ $title = "My Document"
 // if you reload the page the value of $title is 'My Document'
 ```
 
+```javascript
+import { writable } from "@macfja/svelte-persistent-store"
+
+// Create a wriatble store, persisted in browser LocalStorage, with the key `name`
+let name = writable("name", "John")
+
+$name = "Jeanne Doe"
+
+// if you reload the page the value of $name is 'Jeanne Doe'
+```
+
 ## Features
 
 -   Multiple storages (Allow to have the best suited usage depending on your use case)

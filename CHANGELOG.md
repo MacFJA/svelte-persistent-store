@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- New function to create store (`localWritable`, `writable`, `sessionWritable`, `cookieWritable`)
+
+### Changed
+
+- (dev) Move wrappers (+shorthand) to a dedicated file
+
 ## [2.2.1]
 
 ### Fixed

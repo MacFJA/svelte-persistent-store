@@ -23,3 +23,7 @@ _**NOTE:** The encryption is not well adapted for cookie storage, as the data is
     const nickname = persist(writable("John"), storage, "myapp-nickname")
 </script>
 ```
+
+## Encryption key
+
+https://www.allkeysgenerator.com/Random/Security-Encryption-Key-Generator.aspx
