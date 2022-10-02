@@ -13,5 +13,5 @@
 -   [Add an asynchronous storage](How-To/02-New-Async-Storage.md)
 -   [Store a class](How-To/03-Store-Classes.md)
 -   [Disable warnings](How-To/04-Disable-Warnings.md)
--   [Change behavior with missing encryption](How-To/05-Missing-Encryption-Behavior.md)
+-   ~~[Change behavior with missing encryption](How-To/05-Missing-Encryption-Behavior.md)~~
 -   [Change the serialization functions](How-To/06-Change-Serialization.md)

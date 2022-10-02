@@ -2,6 +2,7 @@
 
 A Svelte store that keep its value through pages and reloads
 
+![Github CI](https://github.com/macfja/svelte-persistent-store/workflows/Quality%20tools/badge.svg)
 ![GitHub Repo stars](https://img.shields.io/github/stars/macfja/svelte-persistent-store?style=social)
 ![NPM bundle size](https://img.shields.io/bundlephobia/minzip/@macfja/svelte-persistent-store)
 ![Download per week](https://img.shields.io/npm/dw/@macfja/svelte-persistent-store)

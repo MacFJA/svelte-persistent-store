@@ -3,6 +3,14 @@ name: Change behavior with missing encryption
 order: 5
 ---
 
+# This article is not applicable anymore. (since v2.1.?)
+
+---
+
+---
+
+---
+
 # Change the behavior when the encryption is not possible
 
 The encryption library use the browser native WebCrypto library to work (or NodeJS Crypto library on a server).
