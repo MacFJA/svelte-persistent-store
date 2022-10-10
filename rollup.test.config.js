@@ -16,7 +16,7 @@ export default {
       include: ["src/*"],
       transforms: ["typescript"],
     }),
-    commonjs({ ignore: ["crypto", "util"] }),
+    commonjs({}),
     resolve({
       extensions: [".mjs", ".js", ".json", ".node", ".ts", ".cjs"],
     }),

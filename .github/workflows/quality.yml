@@ -1,4 +1,4 @@
-name: Run Quality tools
+name: Quality tools
 
 on:
     push:

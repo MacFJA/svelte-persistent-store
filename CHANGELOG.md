@@ -6,6 +6,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `createEncryptionStorage()` function to customize the encryption
+- `Encryption` Interface for the encryption definition
+
+### Changed
+
+- Change from [`cyrup`](https://www.npmjs.com/package/cyrup) to [`sjcl-es`](https://www.npmjs.com/package/sjcl-es) and [`sjcl-codec-hex`](https://www.npmjs.com/package/sjcl-codec-hex) ([Issue#31])
+
+### Fixed
+
+- Error while compiling for SvelteKit ([Issue#31])
+
+### Deprecated
+
+- `createEncryptedStorage()` use `createEncryptionStorage()` instead
+- `NO_ENCRYPTION_BEHAVIOR` enum (no replacement)
+- `noEncryptionBehavior()` (no replacement, function do nothing)
+
 ## [2.1.0]
 
 ### Added
@@ -137,4 +156,5 @@ First version
 [Issue#21]: https://github.com/MacFJA/svelte-persistent-store/issues/21
 [Issue#23]: https://github.com/MacFJA/svelte-persistent-store/issues/23
 [Issue#26]: https://github.com/MacFJA/svelte-persistent-store/issues/26
+[Issue#31]: https://github.com/MacFJA/svelte-persistent-store/issues/31
 [PR#8]: https://github.com/MacFJA/svelte-persistent-store/pull/8
