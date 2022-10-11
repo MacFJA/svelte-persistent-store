@@ -3,7 +3,7 @@ name: Change behavior with missing encryption
 order: 5
 ---
 
-# This article is not applicable anymore. (since v2.1.?)
+# This article is not applicable anymore. (since v2.2.0)
 
 ---
 

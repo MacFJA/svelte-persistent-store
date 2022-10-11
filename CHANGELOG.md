@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix class definition type not wide enough ([Issue#32])
+
+### Changed
+
+- (dev) Update Github actions versions.
+
 ## [2.2.0]
 
 ### Added
@@ -160,4 +168,5 @@ First version
 [Issue#23]: https://github.com/MacFJA/svelte-persistent-store/issues/23
 [Issue#26]: https://github.com/MacFJA/svelte-persistent-store/issues/26
 [Issue#31]: https://github.com/MacFJA/svelte-persistent-store/issues/31
+[Issue#32]: https://github.com/MacFJA/svelte-persistent-store/issues/32
 [PR#8]: https://github.com/MacFJA/svelte-persistent-store/pull/8
