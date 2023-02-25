@@ -55,10 +55,10 @@ order: 1
 
 ```html
 <script>
-    import { persist, cookieStorage } from "@macfja/svelte-persistent-store"
+    import { persist, createCookieStorage } from "@macfja/svelte-persistent-store"
     import { writable } from "svelte/store"
 
-    const newsLetterSubscription = persist(writable(false), cookieStorage(), "newsletter")
+    const newsLetterSubscription = persist(writable(false), createCookieStorage(), "newsletter")
 </script>
 
 <footer>
