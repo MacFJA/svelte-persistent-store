@@ -33,7 +33,7 @@ $name = "Jeanne Doe"
 import { persistBrowserSession } from "@macfja/svelte-persistent-store"
 import { writable } from "svelte/store"
 
-let name = persistBrowserSession(writable("Unsaved"), "document-name")
+let title = persistBrowserSession(writable("Unsaved"), "document-name")
 
 $title = "My Document"
 
