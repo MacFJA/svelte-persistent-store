@@ -251,12 +251,20 @@ function getBrowserStorage(browserStorage: Storage, listenExternalChanges = fals
   }
 }
 
+function windowStorageAvailable(name: "localStorage" | "sessionStorage" | "indexedDB"): boolean {
+  try {
+    return typeof window[name] === "object"
+  } catch (e) {
+    return false
+  }
+}
+
 /**
  * Storage implementation that use the browser local storage
  * @param {boolean} listenExternalChanges Update the store if the localStorage is updated from another page
  */
 export function createLocalStorage<T>(listenExternalChanges = false): StorageInterface<T> {
-  if (typeof window !== "undefined" && window?.localStorage) {
+  if (windowStorageAvailable("localStorage")) {
     return getBrowserStorage(window.localStorage, listenExternalChanges)
   }
   warnStorageNotFound("window.localStorage")
@@ -268,7 +276,7 @@ export function createLocalStorage<T>(listenExternalChanges = false): StorageInt
  * @param {boolean} listenExternalChanges Update the store if the sessionStorage is updated from another page
  */
 export function createSessionStorage<T>(listenExternalChanges = false): StorageInterface<T> {
-  if (typeof window !== "undefined" && window?.sessionStorage) {
+  if (windowStorageAvailable("sessionStorage")) {
     return getBrowserStorage(window.sessionStorage, listenExternalChanges)
   }
   warnStorageNotFound("window.sessionStorage")
@@ -302,7 +310,7 @@ export function createCookieStorage(): StorageInterface<any> {
  * Storage implementation that use the browser IndexedDB
  */
 export function createIndexedDBStorage<T>(): SelfUpdateStorageInterface<T> {
-  if (typeof indexedDB !== "object" || typeof window === "undefined" || typeof window?.indexedDB !== "object") {
+  if (typeof indexedDB !== "object" || !windowStorageAvailable("indexedDB")) {
     warnStorageNotFound("IndexedDB")
     return createNoopSelfUpdateStorage()
   }
