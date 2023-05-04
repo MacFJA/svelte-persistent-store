@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- (doc) Typo in README ([PR#39]) + outdated example ([PR#40])
+- (dev) Wrong typing ([PR#38])
+
 ### Added
 
 - New function to create store (`localWritable`, `writable`, `sessionWritable`, `cookieWritable`)
@@ -181,3 +186,6 @@ First version
 [Issue#31]: https://github.com/MacFJA/svelte-persistent-store/issues/31
 [Issue#32]: https://github.com/MacFJA/svelte-persistent-store/issues/32
 [PR#8]: https://github.com/MacFJA/svelte-persistent-store/pull/8
+[PR#38]: https://github.com/MacFJA/svelte-persistent-store/pull/38
+[PR#39]: https://github.com/MacFJA/svelte-persistent-store/pull/39
+[PR#40]: https://github.com/MacFJA/svelte-persistent-store/pull/40
