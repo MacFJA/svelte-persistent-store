@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fix error with sandboxed storage (`localStorage` + `sessionStorage`) ([Issue#41])
 - (doc) Typo in README ([PR#39]) + outdated example ([PR#40])
 - (dev) Wrong typing ([PR#38])
 
@@ -185,6 +186,7 @@ First version
 [Issue#26]: https://github.com/MacFJA/svelte-persistent-store/issues/26
 [Issue#31]: https://github.com/MacFJA/svelte-persistent-store/issues/31
 [Issue#32]: https://github.com/MacFJA/svelte-persistent-store/issues/32
+[Issue#41]: https://github.com/MacFJA/svelte-persistent-store/issues/41
 [PR#8]: https://github.com/MacFJA/svelte-persistent-store/pull/8
 [PR#38]: https://github.com/MacFJA/svelte-persistent-store/pull/38
 [PR#39]: https://github.com/MacFJA/svelte-persistent-store/pull/39
