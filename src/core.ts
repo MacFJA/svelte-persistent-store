@@ -49,7 +49,7 @@ const warnStorageNotFound = (storageName) => {
  * Add a class to the allowed list of classes to be serialized
  * @param classDef The class to add to the list
  */
-export const addSerializableClass = (classDef: ClassDefinition<any>): void => {
+export function addSerializableClass(classDef: ClassDefinition<any>): void {
   addSerializable(classDef)
 }
 
@@ -214,34 +214,6 @@ function createListenerFunctions<T>(
       if (listeners.length === 0) onEmptied()
     },
   }
-}
-
-const sharedCookieStorage = createCookieStorage(),
-  sharedLocalStorage: StorageInterface<any> = createLocalStorage(),
-  sharedSessionStorage: StorageInterface<any> = createSessionStorage()
-/**
- * Persist a store into a cookie
- * @param {Writable<*>} store The store to enhance
- * @param {string} cookieName The name of the cookie
- */
-export function persistCookie<T>(store: Writable<T>, cookieName: string): PersistentStore<T> {
-  return persist(store, sharedCookieStorage, cookieName)
-}
-/**
- * Persist a store into the browser session storage
- * @param {Writable<*>} store The store to enhance
- * @param {string} key The name of the key in the browser session storage
- */
-export function persistBrowserSession<T>(store: Writable<T>, key: string): PersistentStore<T> {
-  return persist(store, sharedSessionStorage, key)
-}
-/**
- * Persist a store into the browser local storage
- * @param {Writable<*>} store The store to enhance
- * @param {string} key The name of the key in the browser local storage
- */
-export function persistBrowserLocal<T>(store: Writable<T>, key: string): PersistentStore<T> {
-  return persist(store, sharedLocalStorage, key)
 }
 
 function getBrowserStorage(browserStorage: Storage, listenExternalChanges = false): SelfUpdateStorageInterface<any> {

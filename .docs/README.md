@@ -6,6 +6,7 @@
 -   [Reuse a store](Examples/02-Reuse-Store.md)
 -   [Self updated Storage](Examples/03-Self-Update-Storage.md)
 -   [Encrypt persisted data](Examples/04-Encrypted-Storage.md)
+-   [Usage of persistent store](Examples/05-Use-Persisted-Store.md)
 
 ## How to
 

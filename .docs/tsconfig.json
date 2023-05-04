@@ -9,5 +9,6 @@
         "declarationDir": "../types",
         "sourceMap": false
     },
+    "stripInternal": true,
     "files": ["../src/index.ts"]
 }
