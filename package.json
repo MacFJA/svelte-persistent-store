@@ -52,7 +52,7 @@
         "typescript": "^4.7.4"
     },
     "peerDependencies": {
-        "svelte": "^4.0"
+        "svelte": "^3.0 || ^4.0"
     },
     "scripts": {
         "doc": "ts-docs src/index.ts",
