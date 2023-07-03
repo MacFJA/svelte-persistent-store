@@ -1,9 +1,9 @@
 import commonjs from "@rollup/plugin-commonjs"
 import resolve from "@rollup/plugin-node-resolve"
 import sucrase from "@rollup/plugin-sucrase"
-import { terser } from "rollup-plugin-terser"
+import terser from "@rollup/plugin-terser"
 
-import pkg from "./package.json"
+import pkg from "./package.json" assert {type: "json"}
 
 const name = pkg.name
   .replace(/^(@\S+\/)?(svelte-)?(\S+)/, "$3")

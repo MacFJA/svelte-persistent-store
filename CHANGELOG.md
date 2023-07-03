@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.1]
+
+### Added
+
+- Add compatibility for Svelte 4 ([PR#47] + [Issue#48])
+
+### Changed
+
+- (dev) Use typedoc again to generate documentation
+- (dev) Update all dependencies to the last version
+
 ## [2.3.0]
 
 ### Fixed
@@ -164,6 +175,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 First version
 
 [Unreleased]: https://github.com/MacFJA/svelte-persistent-store/compare/2.2.1...HEAD
+[2.3.1]: https://github.com/MacFJA/svelte-persistent-store/compare/2.3.0...2.3.1
+[2.3.0]: https://github.com/MacFJA/svelte-persistent-store/compare/2.2.1...2.3.0
 [2.2.1]: https://github.com/MacFJA/svelte-persistent-store/compare/2.2.0...2.2.1
 [2.2.0]: https://github.com/MacFJA/svelte-persistent-store/compare/2.1.0...2.2.0
 [2.1.0]: https://github.com/MacFJA/svelte-persistent-store/compare/2.0.0...2.1.0
@@ -189,7 +202,9 @@ First version
 [Issue#31]: https://github.com/MacFJA/svelte-persistent-store/issues/31
 [Issue#32]: https://github.com/MacFJA/svelte-persistent-store/issues/32
 [Issue#41]: https://github.com/MacFJA/svelte-persistent-store/issues/41
+[Issue#48]: https://github.com/MacFJA/svelte-persistent-store/issues/48
 [PR#8]: https://github.com/MacFJA/svelte-persistent-store/pull/8
 [PR#38]: https://github.com/MacFJA/svelte-persistent-store/pull/38
 [PR#39]: https://github.com/MacFJA/svelte-persistent-store/pull/39
 [PR#40]: https://github.com/MacFJA/svelte-persistent-store/pull/40
+[PR#47]: https://github.com/MacFJA/svelte-persistent-store/pull/47

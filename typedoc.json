@@ -1,0 +1,16 @@
+{
+    "entryPoints": ["src/index.ts"],
+    "includes": "./.docs/",
+    "out": "docs",
+    "tsconfig": ".docs/tsconfig.json",
+    "excludeInternal": true,
+    "excludePrivate": true,
+    "visibilityFilters": {
+        "protected": false,
+        "private": false,
+        "inherited": true,
+        "external": true,
+        "@alpha": false,
+        "@beta": false
+    }
+}

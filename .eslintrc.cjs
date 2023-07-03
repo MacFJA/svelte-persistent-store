@@ -1,3 +1,4 @@
+/* eslint-env node */
 module.exports = {
   env: {
     browser: true,
@@ -24,6 +25,7 @@ module.exports = {
     "import/newline-after-import": ["error"],
     "import/no-absolute-path": ["error"],
     "@typescript-eslint/no-explicit-any": ["off"],
+      "import/no-unresolved": ["error", { ignore: ["svelte/store"] }]
   },
   settings: {
     "import/resolver": {
@@ -31,6 +33,6 @@ module.exports = {
         extensions: [".js", ".ts"],
       },
     },
-    "import/extensions": [".js"],
+    "import/extensions": [".js", ".ts", ".cjs"],
   },
 }
