@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.2]
+
+### Fixed
+
+- Typescript declaration not discovered ([Issue#50])
+
 ## [2.3.1]
 
 ### Added
@@ -174,7 +180,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 First version
 
-[Unreleased]: https://github.com/MacFJA/svelte-persistent-store/compare/2.2.1...HEAD
+[Unreleased]: https://github.com/MacFJA/svelte-persistent-store/compare/2.3.2...HEAD
+[2.3.2]: https://github.com/MacFJA/svelte-persistent-store/compare/2.3.1...2.3.2
 [2.3.1]: https://github.com/MacFJA/svelte-persistent-store/compare/2.3.0...2.3.1
 [2.3.0]: https://github.com/MacFJA/svelte-persistent-store/compare/2.2.1...2.3.0
 [2.2.1]: https://github.com/MacFJA/svelte-persistent-store/compare/2.2.0...2.2.1
@@ -203,6 +210,7 @@ First version
 [Issue#32]: https://github.com/MacFJA/svelte-persistent-store/issues/32
 [Issue#41]: https://github.com/MacFJA/svelte-persistent-store/issues/41
 [Issue#48]: https://github.com/MacFJA/svelte-persistent-store/issues/48
+[Issue#50]: https://github.com/MacFJA/svelte-persistent-store/issues/50
 [PR#8]: https://github.com/MacFJA/svelte-persistent-store/pull/8
 [PR#38]: https://github.com/MacFJA/svelte-persistent-store/pull/38
 [PR#39]: https://github.com/MacFJA/svelte-persistent-store/pull/39
