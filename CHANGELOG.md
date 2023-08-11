@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Cookie options ([Issue#52])
+- (dev) More quality tools
+
 ## [2.3.2]
 
 ### Fixed
@@ -211,6 +216,7 @@ First version
 [Issue#41]: https://github.com/MacFJA/svelte-persistent-store/issues/41
 [Issue#48]: https://github.com/MacFJA/svelte-persistent-store/issues/48
 [Issue#50]: https://github.com/MacFJA/svelte-persistent-store/issues/50
+[Issue#52]: https://github.com/MacFJA/svelte-persistent-store/issues/52
 [PR#8]: https://github.com/MacFJA/svelte-persistent-store/pull/8
 [PR#38]: https://github.com/MacFJA/svelte-persistent-store/pull/38
 [PR#39]: https://github.com/MacFJA/svelte-persistent-store/pull/39

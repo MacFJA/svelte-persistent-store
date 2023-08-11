@@ -3,18 +3,18 @@ import resolve from "@rollup/plugin-node-resolve"
 import sucrase from "@rollup/plugin-sucrase"
 import terser from "@rollup/plugin-terser"
 
-import pkg from "./package.json" assert {type: "json"}
+import packageJson from "./package.json" assert {type: "json"}
 
-const name = pkg.name
-  .replace(/^(@\S+\/)?(svelte-)?(\S+)/, "$3")
-  .replace(/^\w/, (m) => m.toUpperCase())
-  .replace(/-\w/g, (m) => m[1].toUpperCase())
+const name = packageJson.name
+  .replaceAll(/^(@\S+\/)?(svelte-)?(\S+)/g, "$3")
+  .replaceAll(/^\w/g, (m) => m.toUpperCase())
+  .replaceAll(/-\w/g, (m) => m[1].toUpperCase())
 
 const config = () => ({
   input: "src/index.ts",
   output: [
-    { file: pkg.module, format: "es", name },
-    { file: pkg.main, format: "umd", name },
+    { file: packageJson.module, format: "es", name },
+    { file: packageJson.main, format: "umd", name },
   ],
   plugins: [
     sucrase({

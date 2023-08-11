@@ -5,6 +5,7 @@ import {
   type ClassDefinition,
 } from "@macfja/serializer"
 import { get as getCookie, set as setCookie, erase as removeCookie } from "browser-cookies"
+import type { CookieOptions } from "browser-cookies"
 import { get, set, createStore, del } from "idb-keyval"
 import type { Writable } from "svelte/store"
 
@@ -26,10 +27,10 @@ let noWarnings = false
  */
 const alreadyWarnFor: Array<string> = []
 
-const warnUser = (message) => {
+const warnUser = (message: string) => {
   const isProduction = typeof process !== "undefined" && process.env?.NODE_ENV === "production"
 
-  if (!noWarnings && alreadyWarnFor.indexOf(message) === -1 && !isProduction) {
+  if (!noWarnings && !alreadyWarnFor.includes(message) && !isProduction) {
     if (typeof window === "undefined") {
       message += "\n" + "Are you running on a server? Most of storages are not available while running on a server."
     }
@@ -41,16 +42,16 @@ const warnUser = (message) => {
  * Add a log to indicate that the requested Storage have not been found.
  * @param {string} storageName
  */
-const warnStorageNotFound = (storageName) => {
+const warnStorageNotFound = (storageName: string) => {
   warnUser(`Unable to find the ${storageName}. No data will be persisted.`)
 }
 
 /**
  * Add a class to the allowed list of classes to be serialized
- * @param classDef The class to add to the list
+ * @param classDefinition The class to add to the list
  */
-export function addSerializableClass(classDef: ClassDefinition<any>): void {
-  addSerializable(classDef)
+export function addSerializableClass(classDefinition: ClassDefinition<any>): void {
+  addSerializable(classDefinition)
 }
 
 /**
@@ -254,7 +255,7 @@ function getBrowserStorage(browserStorage: Storage, listenExternalChanges = fals
 function windowStorageAvailable(name: "localStorage" | "sessionStorage" | "indexedDB"): boolean {
   try {
     return typeof window[name] === "object"
-  } catch (e) {
+  } catch {
     return false
   }
 }
@@ -286,7 +287,7 @@ export function createSessionStorage<T>(listenExternalChanges = false): StorageI
 /**
  * Storage implementation that use the browser cookies
  */
-export function createCookieStorage(): StorageInterface<any> {
+export function createCookieStorage(cookieOptions?: CookieOptions): StorageInterface<any> {
   if (typeof document === "undefined" || typeof document?.cookie !== "string") {
     warnStorageNotFound("document.cookies")
     return createNoopStorage()
@@ -298,10 +299,10 @@ export function createCookieStorage(): StorageInterface<any> {
       return deserialize(value)
     },
     deleteValue(key: string) {
-      removeCookie(key, { samesite: "Strict" })
+      removeCookie(key, { samesite: "Strict", ...cookieOptions })
     },
     setValue(key: string, value: any) {
-      setCookie(key, serialize(value), { samesite: "Strict" })
+      setCookie(key, serialize(value), { samesite: "Strict", ...cookieOptions })
     },
   }
 }
@@ -415,19 +416,11 @@ export function createNoopStorage(): StorageInterface<any> {
 
 function createNoopSelfUpdateStorage(): SelfUpdateStorageInterface<any> {
   return {
+    ...createNoopStorage(),
     addListener() {
       // Do nothing
     },
     removeListener() {
-      // Do nothing
-    },
-    getValue(): null {
-      return null
-    },
-    deleteValue() {
-      // Do nothing
-    },
-    setValue() {
       // Do nothing
     },
   }
