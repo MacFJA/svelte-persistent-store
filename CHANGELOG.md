@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.1]
+
+### Fixed
+
+- Shared storage eagerly created, nullify the purpose of `disableWarnings` ([Issue#56])
+
 ## [2.4.0]
 
 ### Added
@@ -127,6 +133,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `sessionStorage()` use `createSessionStorage()` instead
 - `indexedDBStorage()` use `createIndexedDBStorage()` instead
 
+## Versions 1.x
+<details>
+
 ## [1.3.0]
 
 ### Added
@@ -187,7 +196,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 First version
 
-[Unreleased]: https://github.com/MacFJA/svelte-persistent-store/compare/2.4.0...HEAD
+</details>
+
+[Unreleased]: https://github.com/MacFJA/svelte-persistent-store/compare/2.4.1...HEAD
+[2.4.1]: https://github.com/MacFJA/svelte-persistent-store/compare/2.4.0...2.4.1
 [2.4.0]: https://github.com/MacFJA/svelte-persistent-store/compare/2.3.2...2.4.0
 [2.3.2]: https://github.com/MacFJA/svelte-persistent-store/compare/2.3.1...2.3.2
 [2.3.1]: https://github.com/MacFJA/svelte-persistent-store/compare/2.3.0...2.3.1
@@ -220,6 +232,7 @@ First version
 [Issue#48]: https://github.com/MacFJA/svelte-persistent-store/issues/48
 [Issue#50]: https://github.com/MacFJA/svelte-persistent-store/issues/50
 [Issue#52]: https://github.com/MacFJA/svelte-persistent-store/issues/52
+[Issue#56]: https://github.com/MacFJA/svelte-persistent-store/issues/56
 [PR#8]: https://github.com/MacFJA/svelte-persistent-store/pull/8
 [PR#38]: https://github.com/MacFJA/svelte-persistent-store/pull/38
 [PR#39]: https://github.com/MacFJA/svelte-persistent-store/pull/39

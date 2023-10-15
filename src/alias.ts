@@ -4,9 +4,25 @@ import type { Writable, StartStopNotifier } from "svelte/store"
 import type { PersistentStore, StorageInterface } from "./core"
 import { createCookieStorage, createLocalStorage, createSessionStorage, persist } from "./core"
 
-const sharedCookieStorage = createCookieStorage(),
-  sharedLocalStorage: StorageInterface<any> = createLocalStorage(),
-  sharedSessionStorage: StorageInterface<any> = createSessionStorage()
+type StorageType = "cookie" | "local" | "session"
+const sharedStorage: { [type in StorageType]?: StorageInterface<any> } = {}
+
+function getStorage(type: StorageType): StorageInterface<any> {
+  if (!Object.keys(sharedStorage).includes(type)) {
+    switch (type) {
+      case "cookie":
+        sharedStorage[type] = createCookieStorage()
+        break
+      case "local":
+        sharedStorage[type] = createLocalStorage()
+        break
+      case "session":
+        sharedStorage[type] = createSessionStorage()
+        break
+    }
+  }
+  return sharedStorage[type] as StorageInterface<any>
+}
 
 /**
  * Persist a store into a cookie
@@ -14,7 +30,7 @@ const sharedCookieStorage = createCookieStorage(),
  * @param {string} cookieName The name of the cookie
  */
 export function persistCookie<T>(store: Writable<T>, cookieName: string): PersistentStore<T> {
-  return persist(store, sharedCookieStorage, cookieName)
+  return persist(store, getStorage("cookie"), cookieName)
 }
 /**
  * Persist a store into the browser session storage
@@ -22,7 +38,7 @@ export function persistCookie<T>(store: Writable<T>, cookieName: string): Persis
  * @param {string} key The name of the key in the browser session storage
  */
 export function persistBrowserSession<T>(store: Writable<T>, key: string): PersistentStore<T> {
-  return persist(store, sharedSessionStorage, key)
+  return persist(store, getStorage("session"), key)
 }
 /**
  * Persist a store into the browser local storage
@@ -30,7 +46,7 @@ export function persistBrowserSession<T>(store: Writable<T>, key: string): Persi
  * @param {string} key The name of the key in the browser local storage
  */
 export function persistBrowserLocal<T>(store: Writable<T>, key: string): PersistentStore<T> {
-  return persist(store, sharedLocalStorage, key)
+  return persist(store, getStorage("local"), key)
 }
 
 /**
