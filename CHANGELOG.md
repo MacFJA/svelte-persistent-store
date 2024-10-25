@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.2]
+
+### Added
+
+- Add support for Svelte v5
+
 ## [2.4.1]
 
 ### Fixed
@@ -198,7 +204,8 @@ First version
 
 </details>
 
-[Unreleased]: https://github.com/MacFJA/svelte-persistent-store/compare/2.4.1...HEAD
+[Unreleased]: https://github.com/MacFJA/svelte-persistent-store/compare/2.4.2...HEAD
+[2.4.2]: https://github.com/MacFJA/svelte-persistent-store/compare/2.4.1...2.4.2
 [2.4.1]: https://github.com/MacFJA/svelte-persistent-store/compare/2.4.0...2.4.1
 [2.4.0]: https://github.com/MacFJA/svelte-persistent-store/compare/2.3.2...2.4.0
 [2.3.2]: https://github.com/MacFJA/svelte-persistent-store/compare/2.3.1...2.3.2
