@@ -153,7 +153,7 @@ export interface SelfUpdateStorageInterface<T> extends StorageInterface<T> {
  * @param {string} key The name of the data key
  */
 export function persist<T>(store: Writable<T>, storage: StorageInterface<T>, key: string): PersistentStore<T> {
-  const initialValue = storage.getValue(key)
+  const initialValue = storage?.getValue(key)
 
   if (null !== initialValue) {
     store.set(initialValue)
@@ -240,14 +240,14 @@ function getBrowserStorage(browserStorage: Storage, listenExternalChanges = fals
     addListener,
     removeListener,
     getValue(key: string): any | null {
-      const value = browserStorage.getItem(key)
+      const value = browserStorage?.getItem(key)
       return deserialize(value)
     },
     deleteValue(key: string) {
-      browserStorage.removeItem(key)
+      browserStorage?.removeItem(key)
     },
     setValue(key: string, value: any) {
-      browserStorage.setItem(key, serialize(value))
+      browserStorage?.setItem(key, serialize(value))
     },
   }
 }
