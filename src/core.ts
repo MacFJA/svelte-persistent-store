@@ -8,6 +8,7 @@ import { get as getCookie, set as setCookie, erase as removeCookie } from "brows
 import type { CookieOptions } from "browser-cookies"
 import { get, set, createStore, del } from "idb-keyval"
 import type { Writable } from "svelte/store"
+import deepEqual from "fast-deep-equal/es6"
 
 /**
  * Disabled warnings about missing/unavailable storages
@@ -159,13 +160,14 @@ export function persist<T>(store: Writable<T>, storage: StorageInterface<T>, key
     store.set(initialValue)
   }
 
-  if ((storage as SelfUpdateStorageInterface<T>).addListener) {
-    ;(storage as SelfUpdateStorageInterface<T>).addListener(key, (newValue) => {
-      store.set(newValue)
-    })
-  }
+  let lastUnderlyingUpdate: { key: string; value: T }
+
+  ;(storage as SelfUpdateStorageInterface<T>).addListener?.(key, (newValue) => {
+    if (!deepEqual(lastUnderlyingUpdate, { key, value: newValue })) store.set(newValue)
+  })
 
   store.subscribe((value) => {
+    lastUnderlyingUpdate = { key, value }
     storage.setValue(key, value)
   })
 
@@ -385,7 +387,7 @@ export function createChromeStorage<T>(
     addListener,
     removeListener,
     getValue(key: string): T | null {
-      chrome.storage[area].get([key], (result) => callListeners(key, result.key))
+      chrome.storage[area].get([key], (result: object) => callListeners(key, result[key]))
       return null
     },
     setValue(key: string, value: T): void {
