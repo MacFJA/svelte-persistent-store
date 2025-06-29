@@ -3,7 +3,8 @@ import resolve from "@rollup/plugin-node-resolve"
 import sucrase from "@rollup/plugin-sucrase"
 import terser from "@rollup/plugin-terser"
 
-import packageJson from "./package.json" assert {type: "json"}
+import packageJson from "./package.json" with {type: "json"}
+
 
 const name = packageJson.name
   .replaceAll(/^(@\S+\/)?(svelte-)?(\S+)/g, "$3")
